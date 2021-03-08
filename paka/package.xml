@@ -4,7 +4,7 @@
   <name>paka</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="tymon.kobylecki@gmail.com">tkobylecki</maintainer>
+  <maintainer email="mateusz@todo.todo">mateusz</maintainer>
   <license>TODO: License declaration</license>
 
   <test_depend>ament_copyright</test_depend>

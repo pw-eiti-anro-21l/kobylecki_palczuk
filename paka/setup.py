@@ -13,13 +13,14 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='tkobylecki',
-    maintainer_email='tymon.kobylecki@gmail.com',
+    maintainer='mateusz',
+    maintainer_email='mateusz@todo.todo',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'wezel1 = paka.wezel1:main'
         ],
     },
 )
