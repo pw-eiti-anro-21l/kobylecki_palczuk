@@ -1,0 +1,17 @@
+package.xml
+setup.cfg
+setup.py
+../build/paka/paka.egg-info/PKG-INFO
+../build/paka/paka.egg-info/SOURCES.txt
+../build/paka/paka.egg-info/dependency_links.txt
+../build/paka/paka.egg-info/entry_points.txt
+../build/paka/paka.egg-info/requires.txt
+../build/paka/paka.egg-info/top_level.txt
+../build/paka/paka.egg-info/zip-safe
+paka/__init__.py
+paka/wezel1.py
+paka/wezel1_stary.py
+resource/paka
+test/test_copyright.py
+test/test_flake8.py
+test/test_pep257.py

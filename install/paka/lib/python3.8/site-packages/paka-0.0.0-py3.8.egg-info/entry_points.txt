@@ -1,0 +1,3 @@
+[console_scripts]
+wezel1 = paka.wezel1:main
+
