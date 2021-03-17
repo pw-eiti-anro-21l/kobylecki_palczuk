@@ -15,26 +15,30 @@ class KeyboardControls(Node):
         self.declare_parameter('left', 'a')
         self.declare_parameter('up', 'w')
         self.declare_parameter('down', 's')
+        self.declare_parameter('stop', 'q')
         self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
         # timer_period = 0.5  # seconds
         # self.timer = self.create_timer(timer_period, self.timer_callback)
         # self.create_param()
         self.get_logger().info('Buenos diaaaaaas')
+        self.lin = float(0)
+        self.ang = float(0)
         self.move()
-        self.lin = 0
-        self.ang = 0
 
     def set_vel(self, l, a):
-        self.lin = float(l)
+        self.lin = float(l) 
         self.ang = float(a)
 
     def move(self):
         counter=1
         with Input(keynames='curses') as input_generator:
+            input_generator.send(0.1)
             up = self.get_parameter('up').get_parameter_value().string_value
             down = self.get_parameter('down').get_parameter_value().string_value
             left = self.get_parameter('left').get_parameter_value().string_value
             right = self.get_parameter('right').get_parameter_value().string_value
+            stop = self.get_parameter('stop').get_parameter_value().string_value
+            self.get_logger().info('Para los controles, use las teclas '+up+', '+down+', '+left+' y '+right+', para detener el uso de '+stop+', cualquier otra pulsación de tecla apagará el nodo.')
             for e in input_generator:
                 self.lin = float(0)
                 self.ang = float(0)
@@ -46,6 +50,11 @@ class KeyboardControls(Node):
                     self.set_vel(0, 1)
                 elif(str(e) == right):
                     self.set_vel(0, -1)
+                elif(str(e) == stop):
+                    self.set_vel(0, 0)
+                else:
+                    self.destroy_node()
+                    rclpy.shutdown()
                 msg = Twist()
                 msg.linear.x = self.lin
                 msg.angular.z = self.ang
