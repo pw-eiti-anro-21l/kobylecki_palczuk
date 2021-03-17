@@ -1,6 +1,6 @@
 import rclpy
 import rclpy.node
-# from rclpy.exceptions import ParameterNotDeclaredError
+from rclpy.exceptions import ParameterNotDeclaredError
 from rcl_interfaces.msg import ParameterType
 # import keyboard
 from curtsies import Input
@@ -21,7 +21,7 @@ class MinimalPublisher(Node):
         self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
         # timer_period = 0.5  # seconds
         # self.timer = self.create_timer(timer_period, self.timer_callback)
-        # self.create_param()
+        self.create_param()
         self.get_logger().info('Buenos diaaaaaas')
         self.move()
         self.lin = 0
@@ -33,32 +33,28 @@ class MinimalPublisher(Node):
 
     def move(self):
         with Input(keynames='curses') as input_generator:
-            up = self.get_parameter('up').get_parameter_value().string_value
-            down = self.get_parameter('down').get_parameter_value().string_value
-            left = self.get_parameter('left').get_parameter_value().string_value
-            right = self.get_parameter('right').get_parameter_value().string_value
             for e in input_generator:
                 self.lin = float(0)
                 self.ang = float(0)
-                if(str(e) == up):
+                if(str(e) == self.get_parameter('up')):
                     self.set_vel(1, 0)
-                elif(str(e) == down):
+                elif(str(e) == self.get_parameter('down')):
                     self.set_vel(-1, 0)
-                elif(str(e) == left):
+                elif(str(e) == self.get_parameter('left')):
                     self.set_vel(0, 1)
-                elif(str(e) == right):
+                elif(str(e) == self.get_parameter('right')):
                     self.set_vel(0, -1)
                 msg = Twist()
                 msg.linear.x = self.lin
                 msg.angular.z = self.ang
                 self.publisher_.publish(msg)
 
-    # def create_param(self):
-    #     my_param = self.get_parameter('test_parameter').get_parameter_value().string_value
-    #     self.get_logger().info('Buenos dias %s' % my_param)
-    #     my_new_param = rclpy.parameter.Parameter('test_parameter', rclpy.Parameter.Type.STRING, 'world')
-    #     all_new_parameters = [my_new_param]
-    #     self.set_parameters(all_new_parameters)
+    def create_param(self):
+        my_param = self.get_parameter('test_parameter').get_parameter_value().string_value
+        self.get_logger().info('Buenos dias %s' % my_param)
+        my_new_param = rclpy.parameter.Parameter('test_parameter', rclpy.Parameter.Type.STRING, 'world')
+        all_new_parameters = [my_new_param]
+        self.set_parameters(all_new_parameters)
 
     # def timer_callback(self):
         # my_param = self.get_parameter('test_parameter').get_parameter_value().string_value
