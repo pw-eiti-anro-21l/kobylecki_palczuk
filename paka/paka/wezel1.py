@@ -1,23 +1,20 @@
 import rclpy
 import rclpy.node
-# from rclpy.exceptions import ParameterNotDeclaredError
+from rclpy.exceptions import ParameterNotDeclaredException
 from rcl_interfaces.msg import ParameterType
-# import keyboard
 from curtsies import Input
 from rclpy.node import Node
-
-# from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 
 
-class MinimalPublisher(Node):
+class KeyboardControls(Node):
 
     def __init__(self):
-        super().__init__('minimal_publisher')
-        self.declare_parameter('right', 'q')
-        self.declare_parameter('left', '8')
-        self.declare_parameter('up', 'x')
-        self.declare_parameter('down', 'm')
+        super().__init__('keyboard_controls')
+        self.declare_parameter('right', 'd')
+        self.declare_parameter('left', 'a')
+        self.declare_parameter('up', 'w')
+        self.declare_parameter('down', 's')
         self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
         # timer_period = 0.5  # seconds
         # self.timer = self.create_timer(timer_period, self.timer_callback)
@@ -32,6 +29,7 @@ class MinimalPublisher(Node):
         self.ang = float(a)
 
     def move(self):
+        counter=1
         with Input(keynames='curses') as input_generator:
             up = self.get_parameter('up').get_parameter_value().string_value
             down = self.get_parameter('down').get_parameter_value().string_value
@@ -52,6 +50,9 @@ class MinimalPublisher(Node):
                 msg.linear.x = self.lin
                 msg.angular.z = self.ang
                 self.publisher_.publish(msg)
+                self.get_logger().info('Buenos diaaaaaas por %s vez' % counter)
+                counter+=1
+                
 
     # def create_param(self):
     #     my_param = self.get_parameter('test_parameter').get_parameter_value().string_value
@@ -87,9 +88,9 @@ class MinimalPublisher(Node):
 def main(args=None):
     rclpy.init(args=args)
 
-    minimal_publisher = MinimalPublisher()
+    keyboard_controls = KeyboardControls()
 
-    rclpy.spin(minimal_publisher)
+    rclpy.spin(keyboard_controls)
 
     # Destroy the node explicitly
     # (optional - otherwise it will be done automatically
