@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'paka'
+package_name = 'lab1'
 
 setup(
     name=package_name,
@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'wezel1 = paka.wezel1:main'
+            'wezel1 = lab1.wezel1:main'
         ],
     },
 )
