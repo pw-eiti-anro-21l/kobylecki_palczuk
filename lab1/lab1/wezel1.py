@@ -73,6 +73,7 @@ class KeyboardControls(Node):
             else:
                 self.destroy_node()
                 rclpy.shutdown()
+                return 0
             self.control()
 
             # publishing
