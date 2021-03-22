@@ -56,7 +56,6 @@ class KeyboardControls(Node):
     # gathers info on keys and publishes new velocity
     def move(self):
         self.setup()
-        counter=1
         with Input(keynames='curses') as input_generator:
             key = input_generator.send(0.1)
             if(str(key) == self.up):
