@@ -82,6 +82,16 @@ def euler_to_quaternion(roll, pitch, yaw):
   qw = cos(roll/2) * cos(pitch/2) * cos(yaw/2) + sin(roll/2) * sin(pitch/2) * sin(yaw/2)
   return Quaternion(x=qx, y=qy, z=qz, w=qw)
 
+def denavit_hartenberg_row_to_euler(matrix_row):
+	# magic happens
+	return roll, pitch, yaw
+
+def denavit_hartenberg_to_euler(matrix):
+	rpys = []
+	for row in matrix:
+		rpys.append(denavit_hartenberg_row_to_euler(row))
+	return rpys
+
 def main():
   node = StatePublisher()
 
