@@ -1,0 +1,49 @@
+<robot name="bogson">
+
+<link name="odom">
+  <visual>
+    <origin xyz="0.5 0 0.0" rpy="1.57 0 0" />
+    <geometry>
+      <cylinder radius="0.01" length="1.0" />
+    </geometry>
+    <material name="magenta">
+      <color rgba="1 0 1 1" />
+    </material>
+  </visual>
+
+  <collision>
+    <origin xyz="0 0 0" rpy="1.57 0 0" />
+    <geometry>
+      <cylinder radius="0.01" length="1.0" />
+    </geometry>
+    <contact_coefficients mu="0" kp="1000.0" kd="1.0"/>
+  </collision>
+</link>
+
+<joint name="joint 0" type="fixed">
+  <origin xyz="0 0 0" />
+  <parent link="odom"/>
+  <child link="axis"/>
+</joint>
+
+<link name="axis">
+  <visual>
+    <origin xyz="1.0 0 0.0" rpy="1.57 0 0" />
+    <geometry>
+      <cylinder radius="0.01" length="2.0" />
+    </geometry>
+    <material name="magenta">
+      <color rgba="1 0 1 1" />
+    </material>
+  </visual>
+
+  <collision>
+    <origin xyz="0 0 0" rpy="1.57 0 0" />
+    <geometry>
+      <cylinder radius="0.01" length="2.0" />
+    </geometry>
+    <contact_coefficients mu="0" kp="1000.0" kd="1.0"/>
+  </collision>
+</link>
+
+</robot>
