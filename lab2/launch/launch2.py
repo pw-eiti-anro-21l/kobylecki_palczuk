@@ -28,6 +28,10 @@ def generate_launch_description():
           output='screen',
           parameters=[{'use_sim_time': use_sim_time}],
           arguments=[urdf]),
+      # Node(
+      #     package='joint_state_publisher',
+      #     executable='joint_state_publisher',
+      #     name='joint_state_publisher'),
       Node(
           package='lab2',
           executable='wezel2',

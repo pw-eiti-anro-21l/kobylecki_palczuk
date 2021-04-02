@@ -1,0 +1,3 @@
+<launch>
+
+	<arg name="j2p2" default="$(find lab2)/urdf/bogson.urdf">

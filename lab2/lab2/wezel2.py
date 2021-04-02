@@ -10,6 +10,7 @@ from tf2_ros import TransformBroadcaster, TransformStamped
 import csv
 import math
 import os
+import random
 class StatePublisher(Node):
 
     def __init__(self):
@@ -26,17 +27,21 @@ class StatePublisher(Node):
         loop_rate = self.create_rate(30)
 
         # robot state
-        tilt = 0.
-        tinc = degree
-        swivel = 0.
-        angle = 0.
-        height = 0.
-        hinc = 0.005
+        # tilt = 0.
+        # tinc = degree
+        # swivel = 0.
+        # angle = 0.
+        # height = 0.
+        # hinc = 0.
+        basedr=0.
+        drtr=0.
+        trczw=0.
+        angle=0.
 
         # message declarations
         odom_trans = TransformStamped()
         odom_trans.header.frame_id = 'odom'
-        odom_trans.child_frame_id = 'axis'
+        odom_trans.child_frame_id = 'base'
         joint_state = JointState()
 
         try:
@@ -46,15 +51,15 @@ class StatePublisher(Node):
                 # update joint_state
                 now = self.get_clock().now()
                 joint_state.header.stamp = now.to_msg()
-                joint_state.name = ['swivel,' 'tilt', 'periscope'] # DO ZMIANY
-                joint_state.position = [swivel, tilt, height] # DO ZMIANY
+                joint_state.name = ['base-drugi', 'drugi-trzeci', 'trzeci-czwarty'] # DO ZMIANY
+                joint_state.position = [basedr, drtr, trczw] # DO ZMIANY
 
                 # update transform
                 # (moving in a circle with radius=2) DO ZMIANY
                 odom_trans.header.stamp = now.to_msg()
-                odom_trans.transform.translation.x = cos(angle)*2
-                odom_trans.transform.translation.y = sin(angle)*2
-                odom_trans.transform.translation.z = 0.7
+                odom_trans.transform.translation.x = float(0) #cos(angle)*2
+                odom_trans.transform.translation.y = float(0) # sin(angle)*2
+                odom_trans.transform.translation.z = float(0)
                 odom_trans.transform.rotation = \
                     euler_to_quaternion(0, 0, angle + pi/2) # roll,pitch,yaw
 
@@ -63,14 +68,14 @@ class StatePublisher(Node):
                 self.broadcaster.sendTransform(odom_trans)
 
                 # Create new robot state
-                tilt += tinc
-                if tilt < -0.5 or tilt > 0.0:
-                    tinc *= -1
-                height += hinc
-                if height > 0.2 or height < 0.0:
-                    hinc *= -1
-                swivel += degree
-                angle += degree/4
+                # tilt += tinc
+                # if tilt < -0.5 or tilt > 0.0:
+                #     tinc *= -1
+                # height += hinc
+                # if height > 0.2 or height < 0.0:
+                #     hinc *= -1
+                # swivel += degree
+                # angle += degree/4
 
                 # This will adjust as needed per iteration
                 loop_rate.sleep()
@@ -101,19 +106,20 @@ def read_from_csv(filename):
         for row in reader:
             dh.append(row)
     return dh
-
 # a, d, alpha, theta
 
 # writes to a given location a urdf.xml file with robot data
 def create_urdf(filename_out, rob_name, filename_in):
     dh = read_from_csv(filename_in)
     dh = dh[1:]
+    orix = 0
+    oriy = 0
+    oriz = 0
     with open(filename_out, 'w+') as file:
         file.write(f'<robot name="{rob_name}">\n\n')
         for i in range(len(dh)):
             name = dh[i][4]
-            if i != len(dh)-1:
-                next_name = dh[i+1][4]
+
             # link
             file.write(f'<link name="{name}">\n')
 
@@ -128,51 +134,54 @@ def create_urdf(filename_out, rob_name, filename_in):
 
             # visual
 
-            length = math.pow(float(dh[i][0]), 2) + math.pow(float(dh[i][1]), 2)
-            length = math.sqrt(length)
+            orix += float(dh[i][1])/2
+            oriz += float(dh[i][0])/2
+
+            length = math.sqrt(math.pow(float(dh[i][0]), 2) + math.pow(float(dh[i][1]), 2))
 
             file.write('  <visual>\n')
-            file.write(f'    <origin xyz="{float(dh[i][0])/2} 0 {float(dh[i][1])/2}" rpy="{1.57} 0 {0}" />\n')
+            file.write(f'    <origin xyz="{orix} {oriy} {oriz}" rpy="0 0 {0}" />\n') # {float(dh[i][0])/2} {float(dh[i][1])/2}
             file.write('    <geometry>\n')
-            file.write(f'      <cylinder radius="0.01" length="{length}" />\n')
+            file.write(f'      <cylinder radius="{random.random()}" length="{length}" />\n')
             file.write('    </geometry>\n')
             file.write('    <material name="magenta">\n')
             file.write('      <color rgba="1 0 1 1" />\n')
             file.write('    </material>\n')
             file.write('  </visual>\n\n')
 
+            orix += float(dh[i][1])/2
+            oriz += float(dh[i][0])/2
+
             # collision
 
-            file.write('  <collision>\n')
-            file.write(f'    <origin xyz="{0} 0 {0}" rpy="{1.57} 0 {0}" />\n')
-            file.write('    <geometry>\n')
-            file.write(f'      <cylinder radius="0.01" length="{length}" />\n')
-            file.write('    </geometry>\n')
-            file.write('    <contact_coefficients mu="0" kp="1000.0" kd="1.0"/>\n')
-            file.write('  </collision>\n')
+            # file.write('  <collision>\n')
+            # file.write(f'    <origin xyz="{0} 0 {0}" rpy="0 {1.57} {0}" />\n')
+            # file.write('    <geometry>\n')
+            # file.write(f'      <cylinder radius="0.01" length="{length}" />\n')
+            # file.write('    </geometry>\n')
+            # file.write('    <contact_coefficients mu="0" kp="1000.0" kd="1.0"/>\n')
+            # file.write('  </collision>\n')
 
             file.write('</link>\n\n')
 
             # joint
             if i != len(dh)-1:
+                next_name = dh[i+1][4]
                 joint_name = "joint " + str(i)
                 types = {'0': "fixed", "var": "revolute"}
                 file.write(f'<joint name="{joint_name}" type="{types[str(dh[i][3])]}">\n')
-                file.write(f'  <origin xyz="{0} 0 {0}" />\n')
+                file.write(f'  <origin xyz="0 0 0" />\n')
                 file.write(f'  <parent link="{name}"/>\n')
                 file.write(f'  <child link="{next_name}"/>\n')
                 if types[dh[i][3]]=="revolute":
                     file.write(f'    <axis xyz="0 1 0" />\n')
-                    file.write(f'    <limit upper="0" lower="-0.5" effort="10" velocity="10" />')
+                    file.write(f'    <limit upper="0" lower="-0.5" effort="10" velocity="10" />\n')
                 file.write('</joint>\n\n')
 
         file.write('</robot>\n')
 
 def main():
-    # try:
     create_urdf("src/kobylecki_palczuk/lab2/urdf/bogson.urdf.xml", "bogson", "src/kobylecki_palczuk/lab2/config/DH.csv")
-    # except FileNotFoundError:
-    #     print("No DH matrix found.")
     node = StatePublisher()
 
 if __name__ == '__main__':

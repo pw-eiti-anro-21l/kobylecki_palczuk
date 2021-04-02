@@ -1,49 +1,73 @@
 <robot name="bogson">
 
-<link name="odom">
+<link name="pierwszy">
   <visual>
-    <origin xyz="0.5 0 0.0" rpy="1.57 0 0" />
+    <origin xyz="0.0 0 0.5" rpy="0 0 0" />
     <geometry>
-      <cylinder radius="0.01" length="1.0" />
+      <cylinder radius="0.1585490727920188" length="1.0" />
     </geometry>
     <material name="magenta">
       <color rgba="1 0 1 1" />
     </material>
   </visual>
 
-  <collision>
-    <origin xyz="0 0 0" rpy="1.57 0 0" />
-    <geometry>
-      <cylinder radius="0.01" length="1.0" />
-    </geometry>
-    <contact_coefficients mu="0" kp="1000.0" kd="1.0"/>
-  </collision>
 </link>
 
 <joint name="joint 0" type="fixed">
   <origin xyz="0 0 0" />
-  <parent link="odom"/>
-  <child link="axis"/>
+  <parent link="pierwszy"/>
+  <child link="drugi"/>
 </joint>
 
-<link name="axis">
+<link name="drugi">
   <visual>
-    <origin xyz="1.0 0 0.0" rpy="1.57 0 0" />
+    <origin xyz="0.0 0 2.0" rpy="0 0 0" />
     <geometry>
-      <cylinder radius="0.01" length="2.0" />
+      <cylinder radius="0.04504641798158404" length="2.0" />
     </geometry>
     <material name="magenta">
       <color rgba="1 0 1 1" />
     </material>
   </visual>
 
-  <collision>
-    <origin xyz="0 0 0" rpy="1.57 0 0" />
+</link>
+
+<joint name="joint 1" type="fixed">
+  <origin xyz="0 0 0" />
+  <parent link="drugi"/>
+  <child link="trzeci"/>
+</joint>
+
+<link name="trzeci">
+  <visual>
+    <origin xyz="0.0 0 4.5" rpy="0 0 0" />
     <geometry>
-      <cylinder radius="0.01" length="2.0" />
+      <cylinder radius="0.9075150404888516" length="3.0" />
     </geometry>
-    <contact_coefficients mu="0" kp="1000.0" kd="1.0"/>
-  </collision>
+    <material name="magenta">
+      <color rgba="1 0 1 1" />
+    </material>
+  </visual>
+
+</link>
+
+<joint name="joint 2" type="fixed">
+  <origin xyz="0 0 0" />
+  <parent link="trzeci"/>
+  <child link="czwarty"/>
+</joint>
+
+<link name="czwarty">
+  <visual>
+    <origin xyz="0.0 0 8.0" rpy="0 0 0" />
+    <geometry>
+      <cylinder radius="0.1755273590338855" length="4.0" />
+    </geometry>
+    <material name="magenta">
+      <color rgba="1 0 1 1" />
+    </material>
+  </visual>
+
 </link>
 
 </robot>
