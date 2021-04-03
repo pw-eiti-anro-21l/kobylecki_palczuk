@@ -116,7 +116,7 @@ def create_urdf(filename_out, rob_name, filename_in):
     oriy = 0
     oriz = 0
     with open(filename_out, 'w+') as file:
-        file.write(f'<robot name="{rob_name}">\n\n')
+        file.write(f'<robot name="{str(rob_name)}">\n\n')
         for i in range(len(dh)):
             name = dh[i][4]
 
@@ -140,14 +140,14 @@ def create_urdf(filename_out, rob_name, filename_in):
             length = math.sqrt(math.pow(float(dh[i][0]), 2) + math.pow(float(dh[i][1]), 2))
 
             file.write('  <visual>\n')
-            file.write(f'    <origin xyz="{orix} {oriy} {oriz}" rpy="0 0 {0}" />\n') # {float(dh[i][0])/2} {float(dh[i][1])/2}
+            file.write(f'    <origin xyz="{orix} {oriy} {oriz}" rpy="0 0 {0}" />\n') # {float(dh[i][0])/2} {float(dh[i][1])/2} # TRZEBA ZMIENIĆ RPY
             file.write('    <geometry>\n')
-            file.write(f'      <cylinder radius="{random.random()}" length="{length}" />\n')
+            file.write(f'      <cylinder radius="{length}" length="{length}" />\n') # random.random()
             file.write('    </geometry>\n')
             file.write('    <material name="magenta">\n')
             file.write('      <color rgba="1 0 1 1" />\n')
             file.write('    </material>\n')
-            file.write('  </visual>\n\n')
+            file.write('  </visual>\n')
 
             orix += float(dh[i][1])/2
             oriz += float(dh[i][0])/2
@@ -165,15 +165,15 @@ def create_urdf(filename_out, rob_name, filename_in):
             file.write('</link>\n\n')
 
             # joint
-            if i != len(dh)-1:
-                next_name = dh[i+1][4]
+            if i >= 1:
+                prev_name = dh[i-1][4]
                 joint_name = "joint " + str(i)
                 types = {'0': "fixed", "var": "revolute"}
                 file.write(f'<joint name="{joint_name}" type="{types[str(dh[i][3])]}">\n')
-                file.write(f'  <origin xyz="0 0 0" />\n')
-                file.write(f'  <parent link="{name}"/>\n')
-                file.write(f'  <child link="{next_name}"/>\n')
-                if types[dh[i][3]]=="revolute":
+                file.write(f'  <origin xyz="0 0 0" />\n') # CHYBA NIE MOŻE BYĆ ZAWSZE 0, TRZEBA ZMIENIĆ
+                file.write(f'  <parent link="{prev_name}"/>\n')
+                file.write(f'  <child link="{name}"/>\n')
+                if types[dh[i][3]]=="revolute": # TO PONIŻEJ CHYBA NIE POWINNY BYĆ STAŁE WARTOŚCI?
                     file.write(f'    <axis xyz="0 1 0" />\n')
                     file.write(f'    <limit upper="0" lower="-0.5" effort="10" velocity="10" />\n')
                 file.write('</joint>\n\n')
@@ -181,7 +181,8 @@ def create_urdf(filename_out, rob_name, filename_in):
         file.write('</robot>\n')
 
 def main():
-    create_urdf("src/kobylecki_palczuk/lab2/urdf/bogson.urdf.xml", "bogson", "src/kobylecki_palczuk/lab2/config/DH.csv")
+    create_urdf("kobylecki_palczuk/lab2/urdf/test_bogson.urdf.xml", \
+        "test_bogson", "kobylecki_palczuk/lab2/config/DH.csv")
     node = StatePublisher()
 
 if __name__ == '__main__':
