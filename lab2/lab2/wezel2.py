@@ -41,7 +41,7 @@ class StatePublisher(Node):
         # message declarations
         odom_trans = TransformStamped()
         odom_trans.header.frame_id = 'odom'
-        odom_trans.child_frame_id = 'base'
+        odom_trans.child_frame_id = 'pierwszy'
         joint_state = JointState()
 
         try:
@@ -51,8 +51,8 @@ class StatePublisher(Node):
                 # update joint_state
                 now = self.get_clock().now()
                 joint_state.header.stamp = now.to_msg()
-                joint_state.name = ['base-drugi', 'drugi-trzeci', 'trzeci-czwarty'] # DO ZMIANY
-                joint_state.position = [basedr, drtr, trczw] # DO ZMIANY
+                joint_state.name = ['pierwszy_to_drugi', 'drugi_to_trzeci', 'trzeci_to_czwarty'] # DO ZMIANY, może już nie?
+                joint_state.position = [basedr, drtr, trczw] # DO ZMIANY, to nie wiem co to jest xd
 
                 # update transform
                 # (moving in a circle with radius=2) DO ZMIANY
@@ -140,12 +140,18 @@ def create_urdf(filename_out, rob_name, filename_in):
             length = math.sqrt(math.pow(float(dh[i][0]), 2) + math.pow(float(dh[i][1]), 2))
 
             file.write('  <visual>\n')
-            file.write(f'    <origin xyz="{orix} {oriy} {oriz}" rpy="0 0 {0}" />\n') # {float(dh[i][0])/2} {float(dh[i][1])/2} # TRZEBA ZMIENIĆ RPY
+            file.write(f'    <origin xyz="{orix} {oriy} {oriz}" rpy="0 {dh[i][2]} {0}" />\n') # {float(dh[i][0])/2} {float(dh[i][1])/2} # TRZEBA ZMIENIĆ RPY
             file.write('    <geometry>\n')
             file.write(f'      <cylinder radius="{length}" length="{length}" />\n') # random.random()
             file.write('    </geometry>\n')
-            file.write('    <material name="magenta">\n')
-            file.write('      <color rgba="1 0 1 1" />\n')
+            # zmiana kolorów, ale nie wiem czemu to NIE DZIAŁA, cociaż urdf robi się chyba dobry
+            materials = {"white": "1 1 1 1", "magenta": "1 0 1 1"}
+            if i%2==0:
+                material="white"
+            else:
+                material="magenta"
+            file.write(f'    <material name="{material}">\n')
+            file.write(f'      <color rgba="{materials[material]}" />\n')
             file.write('    </material>\n')
             file.write('  </visual>\n')
 
@@ -167,10 +173,10 @@ def create_urdf(filename_out, rob_name, filename_in):
             # joint
             if i >= 1:
                 prev_name = dh[i-1][4]
-                joint_name = "joint " + str(i)
+                joint_name = prev_name + "_to_" + name
                 types = {'0': "fixed", "var": "revolute"}
                 file.write(f'<joint name="{joint_name}" type="{types[str(dh[i][3])]}">\n')
-                file.write(f'  <origin xyz="0 0 0" />\n') # CHYBA NIE MOŻE BYĆ ZAWSZE 0, TRZEBA ZMIENIĆ
+                file.write(f'  <origin xyz="{orix - float(dh[i][1])} 0 {oriz - float(dh[i][0])}" />\n') # CHYBA ŹLE? ALE NWM, dla przypadku statycznego to chyba nawet ok
                 file.write(f'  <parent link="{prev_name}"/>\n')
                 file.write(f'  <child link="{name}"/>\n')
                 if types[dh[i][3]]=="revolute": # TO PONIŻEJ CHYBA NIE POWINNY BYĆ STAŁE WARTOŚCI?
