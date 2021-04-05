@@ -2,12 +2,12 @@
 
 <link name="base">
   <visual>
-    <origin xyz="0.0 0 0.0" rpy="0 0 0" />
+    <origin xyz="0.0 0 0.5" rpy="0 0 0" />
     <geometry>
-      <cylinder radius="0.0" length="0.0" />
+      <cylinder radius="0.5" length="1.0" />
     </geometry>
     <material name="green">
-      <color rgba="0 1 0 1" />
+      <color rgba="0 1 0 0.5" />
     </material>
   </visual>
 </link>
@@ -16,70 +16,70 @@
   <visual>
     <origin xyz="0.0 0 0.5" rpy="0 0 0" />
     <geometry>
-      <cylinder radius="1.0" length="1.0" />
+      <cylinder radius="0.5" length="1.0" />
     </geometry>
     <material name="magenta">
-      <color rgba="1 0 1 1" />
+      <color rgba="1 0 1 0.5" />
     </material>
   </visual>
 </link>
 
 <joint name="base_to_pierwszy" type="fixed">
-  <origin xyz="0 0 0" />
+  <origin xyz="0.0 0 1.0" />
   <parent link="base"/>
   <child link="pierwszy"/>
 </joint>
 
 <link name="drugi">
   <visual>
-    <origin xyz="0.0 0 2.0" rpy="0 0 0" />
+    <origin xyz="0.0 0 1.0" rpy="0 0 0" />
     <geometry>
-      <cylinder radius="2.0" length="2.0" />
+      <cylinder radius="0.5" length="2.0" />
     </geometry>
     <material name="green">
-      <color rgba="0 1 0 1" />
+      <color rgba="0 1 0 0.5" />
     </material>
   </visual>
 </link>
 
 <joint name="pierwszy_to_drugi" type="fixed">
-  <origin xyz="0 0 0" />
+  <origin xyz="0.0 0 1.0" />
   <parent link="pierwszy"/>
   <child link="drugi"/>
 </joint>
 
 <link name="trzeci">
   <visual>
-    <origin xyz="0.0 0 4.5" rpy="0 0 0" />
+    <origin xyz="1.0776971896036893 0 -1.0433449896943532" rpy="0 2.34 0" />
     <geometry>
-      <cylinder radius="3.0" length="3.0" />
+      <cylinder radius="0.5" length="3.0" />
     </geometry>
     <material name="magenta">
-      <color rgba="1 0 1 1" />
+      <color rgba="1 0 1 0.5" />
     </material>
   </visual>
 </link>
 
 <joint name="drugi_to_trzeci" type="fixed">
-  <origin xyz="0 0 0" />
+  <origin xyz="0.0 0 2.0" />
   <parent link="drugi"/>
   <child link="trzeci"/>
 </joint>
 
 <link name="czwarty">
   <visual>
-    <origin xyz="0.0 0 8.0" rpy="0 1.5 0" />
+    <origin xyz="1.3187693439429462 0 1.50361145828179" rpy="0 0.72 0" />
     <geometry>
-      <cylinder radius="4.0" length="4.0" />
+      <cylinder radius="0.5" length="4.0" />
     </geometry>
     <material name="green">
-      <color rgba="0 1 0 1" />
+      <color rgba="0 1 0 0.5" />
     </material>
   </visual>
 </link>
 
 <joint name="trzeci_to_czwarty" type="fixed">
-  <origin xyz="0 0 0" />
+  <origin xyz="2.1553943792073786 0 -2.0866899793887064" />
   <parent link="trzeci"/>
   <child link="czwarty"/>
 </joint>

@@ -19,23 +19,12 @@ def create_urdf(filename_out, rob_name, filename_in):
     orix = 0
     oriy = 0
     oriz = 0
-    matr = [[0,0,0,0,"base"]]
+    matr = [[1,0,0,0,"base"]]
     for line in dh:
         matr.append(line)
     dh = matr
     with open(filename_out, 'w+') as file:
         file.write(f'<robot name="{str(rob_name)}">\n\n')
-        # file.write('<link name="base">\n')
-        # file.write('  <visual>\n')
-        # file.write('    <origin xyz="0 0 0" rpy-"0 0 0" />\n')
-        # file.write('    <geometry>\n')
-        # file.write('      <cylinder radius="4.0" length="1.0" />\n')
-        # file.write('    </geometry>\n')
-        # file.write('    <material name="red"\n')
-        # file.write('      <color rgba="1 0 0 1" />\n')
-        # file.write('    </material>\n')
-        # file.write('  </visual>\n')
-        # file.write('</link>\n\n')
         for i in range(len(dh)):
             name = dh[i][4]
 
@@ -53,30 +42,21 @@ def create_urdf(filename_out, rob_name, filename_in):
 
             # visual
 
-            orix += float(dh[i][1])/2
-            oriz += float(dh[i][0])/2
 
-            length = math.sqrt(math.pow(float(dh[i][0]), 2) + math.pow(float(dh[i][1]), 2))
+            # length = math.sqrt(math.pow(float(dh[i][0]), 2) + math.pow(float(dh[i][1]), 2))
 
             file.write('  <visual>\n')
-            file.write(f'    <origin xyz="{orix} {oriy} {oriz}" rpy="0 {dh[i][2]} {0}" />\n') # {float(dh[i][0])/2} {float(dh[i][1])/2} # TRZEBA ZMIENIĆ RPY
+            file.write(f'    <origin xyz="{calculate_link_origin(dh[i][0], dh[i][1], dh[i][2], dh[i][3])}" rpy="0 {dh[i][2]} {0}" />\n') # {float(dh[i][0])/2} {float(dh[i][1])/2} # TRZEBA ZMIENIĆ RPY
             file.write('    <geometry>\n')
-            file.write(f'      <cylinder radius="{length}" length="{length}" />\n') # random.random()
+            file.write(f'      <cylinder radius="{0.5}" length="{float(dh[i][0])}" />\n') # random.random()
             file.write('    </geometry>\n')
-            # zmiana kolorów, ale nie wiem czemu to NIE DZIAŁA, cociaż urdf robi się chyba dobry
-            materials = {"green": "0 1 0 1", "magenta": "1 0 1 1"}
-            if i%2==0:
-                material="green"
-            else:
-                material="magenta"
-            file.write(f'    <material name="{material}">\n')
-            file.write(f'      <color rgba="{materials[material]}" />\n')
+            materials = [("green","0 1 0 0.5"), ("magenta", "1 0 1 0.5")]
+            file.write(f'    <material name="{materials[i%2][0]}">\n')
+            file.write(f'      <color rgba="{materials[i%2][1]}" />\n')
             file.write('    </material>\n')
             file.write('  </visual>\n')
 
-            orix += float(dh[i][1])/2
-            oriz += float(dh[i][0])/2
-
+            
             # collision
 
             # file.write('  <collision>\n')
@@ -95,16 +75,30 @@ def create_urdf(filename_out, rob_name, filename_in):
                 joint_name = prev_name + "_to_" + name
                 types = {'0': "fixed", "var": "revolute"}
                 file.write(f'<joint name="{joint_name}" type="{types[str(dh[i][3])]}">\n')
-                file.write(f'  <origin xyz="0 0 0" />\n')#  {orix - float(dh[i][1])} 0 {oriz - float(dh[i][0])}" />\n') # CHYBA ŹLE? ALE NWM, dla przypadku statycznego to chyba nawet ok
+                file.write(f'  <origin xyz="{calculate_joint_origin(dh[i-1][0], dh[i-1][1], dh[i-1][2], dh[i-1][3])}" />\n')#  {orix - float(dh[i][1])} 0 {oriz - float(dh[i][0])}" />\n') # CHYBA ŹLE? ALE NWM, dla przypadku statycznego to chyba nawet ok
                 file.write(f'  <parent link="{prev_name}"/>\n')
                 file.write(f'  <child link="{name}"/>\n')
                 if types[dh[i][3]]=="revolute": # TO PONIŻEJ CHYBA NIE POWINNY BYĆ STAŁE WARTOŚCI?
                     file.write(f'    <axis xyz="0 1 0" />\n')
                     file.write(f'    <limit upper="0" lower="-0.5" effort="10" velocity="10" />\n')
                 file.write('</joint>\n\n')
+            # orix = float(dh[i][1])
+            # oriz = 0 #float(dh[i][0])
 
         file.write('</robot>\n')
         print("URDF file generated successfully.")
+
+def calculate_joint_origin(a, d, alpha, theta): # all from previous row
+    orix = (float(a)*math.sin(float(alpha)))
+    oriy = 0 # cos trzeba zmienic
+    oriz = (float(a)*math.cos(float(alpha)))
+    return str(orix) + " " + str(oriy) + " " + str(oriz)
+
+def calculate_link_origin(a, d, alpha, theta):
+    orix = (float(a)*math.sin(float(alpha)))/2
+    oriy = 0 # cos trzeba zmienic
+    oriz = (float(a)*math.cos(float(alpha)))/2
+    return str(orix) + " " + str(oriy) + " " + str(oriz)
 
 def main():
     create_urdf("src/kobylecki_palczuk/lab2/urdf/bogson.urdf.xml", \
