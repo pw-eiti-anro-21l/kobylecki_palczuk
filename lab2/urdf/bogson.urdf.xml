@@ -1,73 +1,87 @@
 <robot name="bogson">
 
+<link name="base">
+  <visual>
+    <origin xyz="0.0 0 0.0" rpy="0 0 0" />
+    <geometry>
+      <cylinder radius="0.0" length="0.0" />
+    </geometry>
+    <material name="green">
+      <color rgba="0 1 0 1" />
+    </material>
+  </visual>
+</link>
+
 <link name="pierwszy">
   <visual>
     <origin xyz="0.0 0 0.5" rpy="0 0 0" />
     <geometry>
-      <cylinder radius="0.1585490727920188" length="1.0" />
+      <cylinder radius="1.0" length="1.0" />
     </geometry>
     <material name="magenta">
       <color rgba="1 0 1 1" />
     </material>
   </visual>
-
 </link>
 
-<joint name="joint 0" type="fixed">
+<joint name="base_to_pierwszy" type="fixed">
   <origin xyz="0 0 0" />
-  <parent link="pierwszy"/>
-  <child link="drugi"/>
+  <parent link="base"/>
+  <child link="pierwszy"/>
 </joint>
 
 <link name="drugi">
   <visual>
     <origin xyz="0.0 0 2.0" rpy="0 0 0" />
     <geometry>
-      <cylinder radius="0.04504641798158404" length="2.0" />
+      <cylinder radius="2.0" length="2.0" />
     </geometry>
-    <material name="magenta">
-      <color rgba="1 0 1 1" />
+    <material name="green">
+      <color rgba="0 1 0 1" />
     </material>
   </visual>
-
 </link>
 
-<joint name="joint 1" type="fixed">
+<joint name="pierwszy_to_drugi" type="fixed">
   <origin xyz="0 0 0" />
-  <parent link="drugi"/>
-  <child link="trzeci"/>
+  <parent link="pierwszy"/>
+  <child link="drugi"/>
 </joint>
 
 <link name="trzeci">
   <visual>
     <origin xyz="0.0 0 4.5" rpy="0 0 0" />
     <geometry>
-      <cylinder radius="0.9075150404888516" length="3.0" />
+      <cylinder radius="3.0" length="3.0" />
     </geometry>
     <material name="magenta">
       <color rgba="1 0 1 1" />
     </material>
   </visual>
-
 </link>
 
-<joint name="joint 2" type="fixed">
+<joint name="drugi_to_trzeci" type="fixed">
   <origin xyz="0 0 0" />
-  <parent link="trzeci"/>
-  <child link="czwarty"/>
+  <parent link="drugi"/>
+  <child link="trzeci"/>
 </joint>
 
 <link name="czwarty">
   <visual>
-    <origin xyz="0.0 0 8.0" rpy="0 0 0" />
+    <origin xyz="0.0 0 8.0" rpy="0 1.5 0" />
     <geometry>
-      <cylinder radius="0.1755273590338855" length="4.0" />
+      <cylinder radius="4.0" length="4.0" />
     </geometry>
-    <material name="magenta">
-      <color rgba="1 0 1 1" />
+    <material name="green">
+      <color rgba="0 1 0 1" />
     </material>
   </visual>
-
 </link>
+
+<joint name="trzeci_to_czwarty" type="fixed">
+  <origin xyz="0 0 0" />
+  <parent link="trzeci"/>
+  <child link="czwarty"/>
+</joint>
 
 </robot>
