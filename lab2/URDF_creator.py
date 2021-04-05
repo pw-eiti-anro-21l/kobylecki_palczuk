@@ -101,8 +101,7 @@ def calculate_link_origin(a, d, alpha, theta):
     return str(orix) + " " + str(oriy) + " " + str(oriz)
 
 def main():
-    create_urdf("urdf/bogson.urdf.xml", \
-        "bogson", "src/kobylecki_palczuk/lab2/config/DH.csv")
+    create_urdf("urdf/bogson.urdf.xml", "bogson", "lab2/config/DH.csv")
 
 
 if __name__ == '__main__':
