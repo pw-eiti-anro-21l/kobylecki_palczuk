@@ -11,6 +11,15 @@ import csv
 import math
 import os
 import random
+
+def read_from_csv(filename):
+    dh=[]
+    with open(filename, 'r') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            dh.append(row)
+    return dh
+
 class StatePublisher(Node):
 
     def __init__(self):
@@ -26,6 +35,17 @@ class StatePublisher(Node):
         degree = pi / 180.0
         loop_rate = self.create_rate(30)
 
+        dh = read_from_csv('src/kobylecki_palczuk/lab2/config/DH.csv')
+        dh = dh[1:]
+        matr = [[1,0,0,0,"base"]]
+        for line in dh:
+            matr.append(line)
+        dh = matr
+        # theta_varcount = 0
+        # for line in dh:
+        #     if line[3] == "var":
+        #         theta_varcount += 1
+
         # robot state
         # tilt = 0.
         # tinc = degree
@@ -33,9 +53,14 @@ class StatePublisher(Node):
         # angle = 0.
         # height = 0.
         # hinc = 0.
-        basedr=0.
-        drtr=0.
-        trczw=0.
+        states = []
+        names = []
+        for line in dh:
+            names.append(line[4])
+            states.append(float(0))
+        # basedr=0.
+        # drtr=0.
+        # trczw=0.
         angle=0.
 
         # message declarations
@@ -46,22 +71,23 @@ class StatePublisher(Node):
 
         try:
             while rclpy.ok():
+                for i in states:
+                    i += degree
                 rclpy.spin_once(self)
 
                 # update joint_state
                 now = self.get_clock().now()
                 joint_state.header.stamp = now.to_msg()
-                joint_state.name = ['pierwszy_to_drugi', 'drugi_to_trzeci', 'trzeci_to_czwarty'] # DO ZMIANY, może już nie?
-                joint_state.position = [basedr, drtr, trczw] # DO ZMIANY, to nie wiem co to jest xd
+                joint_state.name = names # DO ZMIANY, może już nie?
+                joint_state.position = states # DO ZMIANY, to nie wiem co to jest xd
 
                 # update transform
                 # (moving in a circle with radius=2) DO ZMIANY
-                odom_trans.header.stamp = now.to_msg()
-                odom_trans.transform.translation.x = float(0) #cos(angle)*2
-                odom_trans.transform.translation.y = float(0) # sin(angle)*2
-                odom_trans.transform.translation.z = 0.
-                odom_trans.transform.rotation = \
-                    euler_to_quaternion(0, 0, angle + pi/2) # roll,pitch,yaw
+                # odom_trans.header.stamp = now.to_msg()
+                # odom_trans.transform.translation.x = 0. #cos(angle)*2
+                # odom_trans.transform.translation.y = 0. # sin(angle)*2
+                # odom_trans.transform.translation.z = 0.
+                # odom_trans.transform.rotation = euler_to_quaternion(0, 0, angle + pi/2) # roll,pitch,yaw
 
                 # send the joint state and transform
                 self.joint_pub.publish(joint_state)
