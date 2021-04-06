@@ -2,7 +2,7 @@
 
 <link name="base">
   <visual>
-    <origin xyz="0.0 0.0 0.5" rpy="0 0 0" />
+    <origin xyz="0.0 0.0 0.5" rpy="0 0 0"/>
     <geometry>
       <cylinder radius="0.5" length="1.0" />
     </geometry>
@@ -14,7 +14,7 @@
 
 <link name="pierwszy">
   <visual>
-    <origin xyz="0.0 0.0 0.5" rpy="0 0 0" />
+    <origin xyz="0.0 0.0 0.5" rpy="0 0 0"/>
     <geometry>
       <cylinder radius="0.5" length="1.0" />
     </geometry>
@@ -25,14 +25,14 @@
 </link>
 
 <joint name="base_to_pierwszy" type="fixed">
-  <origin xyz="0.0 0.0 1.0" />
+  <origin xyz="0.0 0.0 1.0" rpy="0 0 0"/>
   <parent link="base"/>
   <child link="pierwszy"/>
 </joint>
 
 <link name="drugi">
   <visual>
-    <origin xyz="0.0 0.5 1.0" rpy="0 0 0" />
+    <origin xyz="0.7070904020014415 0.0 0.7071231599922605" rpy="0 0.785375 0"/>
     <geometry>
       <cylinder radius="0.5" length="2.0" />
     </geometry>
@@ -43,14 +43,14 @@
 </link>
 
 <joint name="pierwszy_to_drugi" type="fixed">
-  <origin xyz="0.0 0.0 1.0" />
+  <origin xyz="0.0 0.0 1.0" rpy="0 0 0"/>
   <parent link="pierwszy"/>
   <child link="drugi"/>
 </joint>
 
 <link name="trzeci">
   <visual>
-    <origin xyz="1.0776971896036893 -0.5 -1.0433449896943532" rpy="0 2.34 0" />
+    <origin xyz="1.0606356030021622 0.0 1.0606847399883907" rpy="0 0.785375 0"/>
     <geometry>
       <cylinder radius="0.5" length="3.0" />
     </geometry>
@@ -61,14 +61,14 @@
 </link>
 
 <joint name="drugi_to_trzeci" type="fixed">
-  <origin xyz="0.0 0.5 2.0" />
+  <origin xyz="1.414180804002883 0.0 1.414246319984521" rpy="0 0.785375 0"/>
   <parent link="drugi"/>
   <child link="trzeci"/>
 </joint>
 
 <link name="czwarty">
   <visual>
-    <origin xyz="1.3187693439429462 1.0 1.50361145828179" rpy="0 0.72 0" />
+    <origin xyz="1.414180804002883 0.0 1.414246319984521" rpy="0 0.785375 0"/>
     <geometry>
       <cylinder radius="0.5" length="4.0" />
     </geometry>
@@ -79,9 +79,63 @@
 </link>
 
 <joint name="trzeci_to_czwarty" type="fixed">
-  <origin xyz="2.1553943792073786 -0.5 -2.0866899793887064" />
+  <origin xyz="2.1212712060043244 0.0 2.1213694799767815" rpy="0 0.785375 0"/>
   <parent link="trzeci"/>
   <child link="czwarty"/>
+</joint>
+
+<link name="narzedzie">
+  <visual>
+    <origin xyz="1.7677260050036037 0.0 1.7678078999806512" rpy="0 0.785375 0"/>
+    <geometry>
+      <cylinder radius="0.5" length="5.0" />
+    </geometry>
+    <material name="magenta">
+      <color rgba="1 0 1 0.5" />
+    </material>
+  </visual>
+</link>
+
+<joint name="czwarty_to_narzedzie" type="fixed">
+  <origin xyz="2.828361608005766 0.0 2.828492639969042" rpy="0 0.785375 0"/>
+  <parent link="czwarty"/>
+  <child link="narzedzie"/>
+</joint>
+
+<link name="narzedzie2">
+  <visual>
+    <origin xyz="2.1212712060043244 0.0 2.1213694799767815" rpy="0 0.785375 0"/>
+    <geometry>
+      <cylinder radius="0.5" length="6.0" />
+    </geometry>
+    <material name="green">
+      <color rgba="0 1 0 0.5" />
+    </material>
+  </visual>
+</link>
+
+<joint name="narzedzie_to_narzedzie2" type="fixed">
+  <origin xyz="3.5354520100072073 0.0 3.5356157999613025" rpy="0 0.785375 0"/>
+  <parent link="narzedzie"/>
+  <child link="narzedzie2"/>
+</joint>
+
+<link name="narzedzie3">
+  <visual>
+    <origin xyz="0.0 0.0 3.5" rpy="0 0 0"/>
+    <geometry>
+      <cylinder radius="0.5" length="7.0" />
+    </geometry>
+    <material name="magenta">
+      <color rgba="1 0 1 0.5" />
+    </material>
+  </visual>
+</link>
+
+<joint name="narzedzie2_to_narzedzie3" type="fixed">
+  <origin xyz="4.242542412008649 0.0 4.242738959953563" rpy="0 0.785375 0"/>
+  <parent link="narzedzie2"/>
+  <child link="narzedzie3"/>
 </joint>
 
 </robot>

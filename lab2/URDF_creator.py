@@ -2,6 +2,9 @@ import csv
 import math
 import os
 import random
+
+alpha_sum = 0
+
 # takes filename and path of csv file and outputs DH matrix as table
 def read_from_csv(filename):
     dh=[]
@@ -46,7 +49,7 @@ def create_urdf(filename_out, rob_name, filename_in):
             # length = math.sqrt(math.pow(float(dh[i][0]), 2) + math.pow(float(dh[i][1]), 2))
 
             file.write('  <visual>\n')
-            file.write(f'    <origin xyz="{calculate_link_origin(dh[i][0], dh[i][1], dh[i][2], dh[i][3])}" rpy="0 {dh[i][2]} {0}" />\n') # {float(dh[i][0])/2} {float(dh[i][1])/2} # TRZEBA ZMIENIĆ RPY
+            file.write(f'    <origin xyz="{calculate_link_origin(dh[i][0], dh[i][1], dh[i][2], dh[i][3])}" rpy="{claculate_alpha_link_origin(dh[i])}"/>\n') # {float(dh[i][0])/2} {float(dh[i][1])/2} # TRZEBA ZMIENIĆ RPY
             file.write('    <geometry>\n')
             file.write(f'      <cylinder radius="{0.5}" length="{float(dh[i][0])}" />\n') # random.random()
             file.write('    </geometry>\n')
@@ -75,13 +78,15 @@ def create_urdf(filename_out, rob_name, filename_in):
                 joint_name = prev_name + "_to_" + name
                 types = {'0': "fixed", "var": "revolute"}
                 file.write(f'<joint name="{joint_name}" type="{types[str(dh[i][3])]}">\n')
-                file.write(f'  <origin xyz="{calculate_joint_origin(dh[i-1][0], dh[i-1][1], dh[i-1][2], dh[i-1][3])}" />\n')#  {orix - float(dh[i][1])} 0 {oriz - float(dh[i][0])}" />\n') # CHYBA ŹLE? ALE NWM, dla przypadku statycznego to chyba nawet ok
+                file.write(f'  <origin xyz="{calculate_joint_origin(dh[i-1][0], dh[i-1][1], dh[i-1][2], dh[i-1][3])}" rpy="{claculate_alpha_joint_origin(dh[i-1]) if i>0 else "0 0 0"}"/>\n')#  {orix - float(dh[i][1])} 0 {oriz - float(dh[i][0])}" />\n') # CHYBA ŹLE? ALE NWM, dla przypadku statycznego to chyba nawet ok
                 file.write(f'  <parent link="{prev_name}"/>\n')
                 file.write(f'  <child link="{name}"/>\n')
                 if types[dh[i][3]]=="revolute": # TO PONIŻEJ CHYBA NIE POWINNY BYĆ STAŁE WARTOŚCI?
                     file.write(f'    <axis xyz="0 1 0" />\n')
                     file.write(f'    <limit upper="0" lower="-0.5" effort="10" velocity="10" />\n')
                 file.write('</joint>\n\n')
+
+            sum_alpha(dh[i])
             # orix = float(dh[i][1])
             # oriz = 0 #float(dh[i][0])
 
@@ -100,8 +105,31 @@ def calculate_link_origin(a, d, alpha, theta):
     oriz = (float(a)*math.cos(float(alpha)))/2
     return str(orix) + " " + str(oriy) + " " + str(oriz)
 
+def claculate_alpha_link_origin(row): # data from previous row
+    [a, d, alpha, theta] = row[:4]
+    return "0 " + str(alpha) + " 0"
+
+def claculate_alpha_joint_origin(prev_row): # data from previous row
+    global alpha_sum
+    [a, d, alpha, theta] = prev_row[:4]
+    return "0 " + str(alpha) + " 0"
+
+def sum_alpha(row):
+    global alpha_sum
+    [a, d, alpha, theta] = row[:4]
+    alpha_sum += float(alpha)
+    alpha_sum = normalize_angle(alpha_sum)
+
+def normalize_angle(angle):
+    while angle > math.pi * 2 or angle < -math.pi * 2:
+        if angle > math.pi * 2:
+            angle -= math.pi * 2
+        elif angle < -math.pi * 2:
+            angle += math.pi * 2
+    return angle
+
 def main():
-    create_urdf("urdf/bogson.urdf.xml", "bogson", "lab2/config/DH.csv")
+    create_urdf("urdf/bogson.urdf.xml", "bogson", "config/DH.csv")
 
 
 if __name__ == '__main__':

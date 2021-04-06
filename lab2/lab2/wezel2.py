@@ -90,14 +90,6 @@ def euler_to_quaternion(roll, pitch, yaw):
     qw = cos(roll/2) * cos(pitch/2) * cos(yaw/2) + sin(roll/2) * sin(pitch/2) * sin(yaw/2)
     return Quaternion(x=qx, y=qy, z=qz, w=qw)
 
-def normalize_angle(angle):
-    while angle > pi * 2 or angle < -pi * 2:
-        if angle > pi * 2:
-            angle -= pi * 2
-        elif angle < -pi * 2:
-            angle += pi * 2
-    return angle
-
 def main():
     # create_urdf("src/kobylecki_palczuk/lab2/urdf/bogson.urdf.xml", \
     #     "test_bogson", "src/kobylecki_palczuk/lab2/config/DH.csv")
