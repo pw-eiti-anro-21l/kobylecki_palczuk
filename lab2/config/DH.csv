@@ -1,8 +1,5 @@
 a,d,theta,alpha,name
-1,0,0,0,pierwszy
-2,0,0.785375,0.3,drugi
-3,0,0.785375,0.3,trzeci
-4,0,0.785375,0.3,czwarty
-5,0,0.785375,0.3,piaty
-6,0,0.785375,var,szosty
-7,0,0,0,narzedzie
+2,0,0,0,pierwszy
+2,0,0,var,drugi
+2,0,1.5708,var,trzeci
+1,0,0,0,narzedzie

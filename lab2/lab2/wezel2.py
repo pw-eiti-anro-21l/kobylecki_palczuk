@@ -55,13 +55,18 @@ class StatePublisher(Node):
         # hinc = 0.
         states = []
         names = []
+        prev_line = dh[0]
         for line in dh:
-            names.append(line[4])
-            states.append(float(0))
+            if line[3] == 'var':
+                joint_name = prev_line[4] + "_to_" + line[4]
+                names.append(joint_name)
+                states.append(float(0))
+            prev_line = line
         # basedr=0.
         # drtr=0.
         # trczw=0.
         angle=0.
+        going_back = False
 
         # message declarations
         odom_trans = TransformStamped()
@@ -71,8 +76,18 @@ class StatePublisher(Node):
 
         try:
             while rclpy.ok():
-                for i in states:
-                    i += degree
+                # for i in states:
+                #     i += degree
+                for i in range(len(states)):
+                    if states[i] > pi/2:
+                        going_back = True
+                    if states[i] < -pi/2:
+                        going_back = False
+                    if going_back:
+                        states[i] -= degree
+                    else:
+                        states[i] += degree
+                # self.get_logger().info('degree = ' + str(degree))
                 rclpy.spin_once(self)
 
                 # update joint_state
@@ -80,14 +95,21 @@ class StatePublisher(Node):
                 joint_state.header.stamp = now.to_msg()
                 joint_state.name = names # DO ZMIANY, może już nie?
                 joint_state.position = states # DO ZMIANY, to nie wiem co to jest xd
+                
+                # platynowy debugger
+                # for i in names:
+                #     self.get_logger().info(str(i))
+                # for j in states:
+                #     self.get_logger().info(str(j))
+                # self.get_logger().info('')
 
                 # update transform
                 # (moving in a circle with radius=2) DO ZMIANY
-                # odom_trans.header.stamp = now.to_msg()
-                # odom_trans.transform.translation.x = 0. #cos(angle)*2
-                # odom_trans.transform.translation.y = 0. # sin(angle)*2
-                # odom_trans.transform.translation.z = 0.
-                # odom_trans.transform.rotation = euler_to_quaternion(0, 0, angle + pi/2) # roll,pitch,yaw
+                odom_trans.header.stamp = now.to_msg()
+                odom_trans.transform.translation.x = 0. #cos(angle)*2
+                odom_trans.transform.translation.y = 0. # sin(angle)*2
+                odom_trans.transform.translation.z = 0.
+                odom_trans.transform.rotation = euler_to_quaternion(0, 0, 0) # roll,pitch,yaw   0, 0, angle + pi/2
 
                 # send the joint state and transform
                 self.joint_pub.publish(joint_state)

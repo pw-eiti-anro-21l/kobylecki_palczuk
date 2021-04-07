@@ -90,7 +90,7 @@ def create_urdf(filename_out, rob_name, filename_in):
                 file.write(f'  <child link="{name}"/>\n')
                 if dh[i][3] == "var":
                     file.write(f'  <axis xyz="0 1 0" />\n')
-                    file.write(f'  <limit upper="3.1415" lower="-3.1415" effort="10" velocity="10" />\n')
+                    file.write(f'  <limit upper="1.57075" lower="-1.57075" effort="10" velocity="10" />\n')
                 file.write('</joint>\n\n')
 
             # sum_theta(dh[i])
