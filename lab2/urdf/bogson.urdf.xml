@@ -6,8 +6,8 @@
     <geometry>
       <box size="0.5 0.5 1.0" />
     </geometry>
-    <material name="0.07426036202253605">
-      <color rgba="0.11978384038846723 0.23566282450040776 0.8850449048447724 0.5" />
+    <material name="0.9395086104009412">
+      <color rgba="0.30452292518293955 0.8571585377196592 0.8312240896344725 0.5" />
     </material>
   </visual>
 </link>
@@ -18,14 +18,14 @@
     <geometry>
       <box size="0.5 0.5 1.0" />
     </geometry>
-    <material name="0.6363275138514968">
-      <color rgba="0.8746327065715772 0.5904450645137076 0.002560305876574187 0.5" />
+    <material name="0.21758772510645286">
+      <color rgba="0.3789994883357799 0.591308356423235 0.6280016499855663 0.5" />
     </material>
   </visual>
 </link>
 
 <joint name="base_to_pierwszy" type="fixed">
-  <origin xyz="0 0.0 1.0" rpy="0 0.0 0.0"/>
+  <origin xyz="0 0.0 1.0" rpy="0.0 0 0.0"/>
   <parent link="base"/>
   <child link="pierwszy"/>
 </joint>
@@ -36,14 +36,14 @@
     <geometry>
       <box size="0.5 0.5 2.0" />
     </geometry>
-    <material name="0.38428028151383375">
-      <color rgba="0.16968546264897832 0.03392173274423804 0.1297411189481401 0.5" />
+    <material name="0.3872664648684704">
+      <color rgba="0.9837565954822048 0.3805530659286712 0.0829415671353283 0.5" />
     </material>
   </visual>
 </link>
 
 <joint name="pierwszy_to_drugi" type="fixed">
-  <origin xyz="0 0.0 1.0" rpy="0 0.785375 0.3"/>
+  <origin xyz="0 0.0 1.0" rpy="0.3 0 0.785375"/>
   <parent link="pierwszy"/>
   <child link="drugi"/>
 </joint>
@@ -54,14 +54,14 @@
     <geometry>
       <box size="0.5 0.5 3.0" />
     </geometry>
-    <material name="0.30107830699112537">
-      <color rgba="0.5204415020980884 0.37404173079785774 0.09187339888807466 0.5" />
+    <material name="0.6538717306004362">
+      <color rgba="0.44181721966172194 0.18573204017844003 0.890969061026765 0.5" />
     </material>
   </visual>
 </link>
 
 <joint name="drugi_to_trzeci" type="fixed">
-  <origin xyz="0 0.0 2.0" rpy="0 0.785375 0.3"/>
+  <origin xyz="0 0.0 2.0" rpy="0.3 0 0.785375"/>
   <parent link="drugi"/>
   <child link="trzeci"/>
 </joint>
@@ -72,72 +72,72 @@
     <geometry>
       <box size="0.5 0.5 4.0" />
     </geometry>
-    <material name="0.8387210670435314">
-      <color rgba="0.688705542702392 0.15660548990936018 0.11854065148164461 0.5" />
+    <material name="0.592059376241174">
+      <color rgba="0.5876789106314507 0.9926571262905017 0.6146341847900482 0.5" />
     </material>
   </visual>
 </link>
 
 <joint name="trzeci_to_czwarty" type="fixed">
-  <origin xyz="0 0.0 3.0" rpy="0 0.785375 0.3"/>
+  <origin xyz="0 0.0 3.0" rpy="0.3 0 0.785375"/>
   <parent link="trzeci"/>
   <child link="czwarty"/>
 </joint>
 
-<link name="narzedzie">
+<link name="piaty">
   <visual>
     <origin xyz="0 0.0 2.5" rpy="0 0 0"/>
     <geometry>
       <box size="0.5 0.5 5.0" />
     </geometry>
-    <material name="0.100718060976287">
-      <color rgba="0.35833349617634325 0.20985539243093398 0.684385930949891 0.5" />
+    <material name="0.16910638446730564">
+      <color rgba="0.8545967020594019 0.2800568632954715 0.6341860325244484 0.5" />
     </material>
   </visual>
 </link>
 
-<joint name="czwarty_to_narzedzie" type="fixed">
-  <origin xyz="0 0.0 4.0" rpy="0 0.785375 0.3"/>
+<joint name="czwarty_to_piaty" type="fixed">
+  <origin xyz="0 0.0 4.0" rpy="0.3 0 0.785375"/>
   <parent link="czwarty"/>
-  <child link="narzedzie"/>
+  <child link="piaty"/>
 </joint>
 
-<link name="narzedzie2">
+<link name="szosty">
   <visual>
     <origin xyz="0 0.0 3.0" rpy="0 0 0"/>
     <geometry>
       <box size="0.5 0.5 6.0" />
     </geometry>
-    <material name="0.5182036350851686">
-      <color rgba="0.13128181080450896 0.5329846920853888 0.5707193360900695 0.5" />
+    <material name="0.06057319326876487">
+      <color rgba="0.8506959268278487 0.11908974939303818 0.6164998452381739 0.5" />
     </material>
   </visual>
 </link>
 
-<joint name="narzedzie_to_narzedzie2" type="revolute">
-  <origin xyz="0 0.0 5.0" rpy="0 0.785375 0"/>
-  <parent link="narzedzie"/>
-  <child link="narzedzie2"/>
+<joint name="piaty_to_szosty" type="revolute">
+  <origin xyz="0 0.0 5.0" rpy="0 0 0.785375"/>
+  <parent link="piaty"/>
+  <child link="szosty"/>
   <axis xyz="0 1 0" />
-  <limit upper="0" lower="-0.5" effort="10" velocity="10" />
+  <limit upper="3.1415" lower="-3.1415" effort="10" velocity="10" />
 </joint>
 
-<link name="narzedzie3">
+<link name="narzedzie">
   <visual>
     <origin xyz="0 0.0 3.5" rpy="0 0 0"/>
     <geometry>
       <box size="0.5 0.5 7.0" />
     </geometry>
-    <material name="0.39870064306764297">
-      <color rgba="0.82673572398642 0.995573217824589 0.24769746104282897 0.5" />
+    <material name="0.44312283896856963">
+      <color rgba="0.22078490367404313 0.624545688754222 0.47844343022867464 0.5" />
     </material>
   </visual>
 </link>
 
-<joint name="narzedzie2_to_narzedzie3" type="fixed">
-  <origin xyz="0 0.0 6.0" rpy="0 0.0 0.3"/>
-  <parent link="narzedzie2"/>
-  <child link="narzedzie3"/>
+<joint name="szosty_to_narzedzie" type="fixed">
+  <origin xyz="0 0.0 6.0" rpy="0.0 0 0.0"/>
+  <parent link="szosty"/>
+  <child link="narzedzie"/>
 </joint>
 
 </robot>

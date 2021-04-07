@@ -3,6 +3,12 @@ import math
 import os
 import random
 
+"""
+WARNING:
+xyz -> zxy (in visual), rpy -> ypr (in xml)
+theta -> alpha, alpha -> theta (in .csv)
+"""
+
 # theta_sum = 0
 
 # takes filename and path of csv file and outputs DH matrix as table
@@ -79,12 +85,12 @@ def create_urdf(filename_out, rob_name, filename_in):
                 joint_name = prev_name + "_to_" + name
                 # types = {'0': "fixed", "var": "revolute"}
                 file.write(f'<joint name="{joint_name}" type="{"revolute" if dh[i][3] == "var" else "fixed"}">\n') #{types[str(dh[i][3])]}">\n')
-                file.write(f'  <origin xyz="{calculate_joint_origin(dh[i-1][0], dh[i-1][1], dh[i-1][2], dh[i-1][3])}" rpy="0 {float(dh[i][2])} {float(dh[i][3]) if dh[i][3] != "var" else "0"}"/>\n') # {calculate_theta_joint_origin(dh[i-1]) if i>0 else "0 0 0"}"/>\n')#  {orix - float(dh[i][1])} 0 {oriz - float(dh[i][0])}" />\n') # CHYBA ŹLE? ALE NWM, dla przypadku statycznego to chyba nawet ok
+                file.write(f'  <origin xyz="{calculate_joint_origin(dh[i-1][0], dh[i-1][1], dh[i-1][2], dh[i-1][3])}" rpy="{float(dh[i][3]) if dh[i][3] != "var" else "0"} 0 {float(dh[i][2])}"/>\n') # {calculate_theta_joint_origin(dh[i-1]) if i>0 else "0 0 0"}"/>\n')#  {orix - float(dh[i][1])} 0 {oriz - float(dh[i][0])}" />\n') # CHYBA ŹLE? ALE NWM, dla przypadku statycznego to chyba nawet ok
                 file.write(f'  <parent link="{prev_name}"/>\n')
                 file.write(f'  <child link="{name}"/>\n')
-                if dh[i][3] == "var": # TO PONIŻEJ CHYBA NIE POWINNY BYĆ STAŁE WARTOŚCI?
+                if dh[i][3] == "var":
                     file.write(f'  <axis xyz="0 1 0" />\n')
-                    file.write(f'  <limit upper="0" lower="-0.5" effort="10" velocity="10" />\n')
+                    file.write(f'  <limit upper="3.1415" lower="-3.1415" effort="10" velocity="10" />\n')
                 file.write('</joint>\n\n')
 
             # sum_theta(dh[i])

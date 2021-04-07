@@ -35,7 +35,7 @@ class StatePublisher(Node):
         degree = pi / 180.0
         loop_rate = self.create_rate(30)
 
-        dh = read_from_csv('src/kobylecki_palczuk/lab2/config/DH.csv')
+        dh = read_from_csv('kobylecki_palczuk/lab2/config/DH.csv')
         dh = dh[1:]
         matr = [[1,0,0,0,"base"]]
         for line in dh:
