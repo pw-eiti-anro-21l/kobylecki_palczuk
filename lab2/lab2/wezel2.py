@@ -55,18 +55,35 @@ class StatePublisher(Node):
         # hinc = 0.
         states = []
         names = []
+        types = []
+        limits = []
         prev_line = dh[0]
         for line in dh:
+
+            joint_type = None
             if line[3] == 'var':
+                joint_type = "revolute"
+            for index in range(len(str(line[0]))):
+                if str(line[0])[index] == ':':
+                    joint_type = "prismatic"
+                    prismatic_lower_limit = float(line[0][:index])
+                    prismatic_upper_limit = float(line[0][index+1:])
+
+            if joint_type != None:
                 joint_name = prev_line[4] + "_to_" + line[4]
                 names.append(joint_name)
                 states.append(float(0))
+                types.append(joint_type)
+                if joint_type == "prismatic":
+                    limits.append((prismatic_lower_limit, prismatic_upper_limit))
+
             prev_line = line
         # basedr=0.
         # drtr=0.
         # trczw=0.
         angle=0.
         going_back = False
+        prismatic_going_back = False
 
         # message declarations
         odom_trans = TransformStamped()
@@ -79,22 +96,32 @@ class StatePublisher(Node):
                 # for i in states:
                 #     i += degree
                 for i in range(len(states)):
-                    if states[i] > pi/2:
-                        going_back = True
-                    if states[i] < -pi/2:
-                        going_back = False
-                    if going_back:
-                        states[i] -= degree
-                    else:
-                        states[i] += degree
+                    if types[i] == "revolute":
+                        if states[i] > pi/2:
+                            going_back = True
+                        if states[i] < -pi/2:
+                            going_back = False
+                        if going_back:
+                            states[i] -= degree
+                        else:
+                            states[i] += degree
+                    elif types[i] == "prismatic":
+                        if states[i] > limits[i][1] - limits[i][0]:
+                            prismatic_going_back = True
+                        if states[i] < 0:
+                            prismatic_going_back = False
+                        if prismatic_going_back:
+                            states[i] -= 0.01
+                        else:
+                            states[i] += 0.01
                 # self.get_logger().info('degree = ' + str(degree))
                 rclpy.spin_once(self)
 
                 # update joint_state
                 now = self.get_clock().now()
                 joint_state.header.stamp = now.to_msg()
-                joint_state.name = names # DO ZMIANY, może już nie?
-                joint_state.position = states # DO ZMIANY, to nie wiem co to jest xd
+                joint_state.name = names
+                joint_state.position = states
                 
                 # platynowy debugger
                 # for i in names:

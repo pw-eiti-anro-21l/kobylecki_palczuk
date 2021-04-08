@@ -6,8 +6,8 @@
     <geometry>
       <box size="0.5 0.5 1.0" />
     </geometry>
-    <material name="0.48505499092652593">
-      <color rgba="0.8386912536755906 0.7686551181015421 0.40673635570412814 0.5" />
+    <material name="0.3465439533826242">
+      <color rgba="0.41328103599728483 0.7778155754853163 0.23150030637901065 0.5" />
     </material>
   </visual>
 </link>
@@ -18,16 +18,18 @@
     <geometry>
       <box size="0.5 0.5 2.0" />
     </geometry>
-    <material name="0.6438101007111079">
-      <color rgba="0.6397857766405962 0.3466725072913863 0.2576450270627594 0.5" />
+    <material name="0.1265825941282357">
+      <color rgba="0.42644811498183355 0.3518196428635404 0.0390478442084885 0.5" />
     </material>
   </visual>
 </link>
 
-<joint name="base_to_pierwszy" type="fixed">
+<joint name="base_to_pierwszy" type="prismatic">
   <origin xyz="0 0.0 1.0" rpy="0.0 0 0.0"/>
   <parent link="base"/>
   <child link="pierwszy"/>
+  <axis xyz="0 0 1" />
+  <limit upper="4.0" lower="2.0" effort="10" velocity="10" />
 </joint>
 
 <link name="drugi">
@@ -36,8 +38,8 @@
     <geometry>
       <box size="0.5 0.5 2.0" />
     </geometry>
-    <material name="0.7943083859635198">
-      <color rgba="0.5529530992847452 0.5080797818554239 0.19240496907530535 0.5" />
+    <material name="0.2307139704702924">
+      <color rgba="0.47381061153487647 0.35947625197102506 0.24221932163993654 0.5" />
     </material>
   </visual>
 </link>
@@ -56,8 +58,8 @@
     <geometry>
       <box size="0.5 0.5 2.0" />
     </geometry>
-    <material name="0.7474188918911576">
-      <color rgba="0.3374349259317768 0.47865313719670133 0.31330418525617243 0.5" />
+    <material name="0.6373315875351944">
+      <color rgba="0.6006314098617382 0.7313820558649545 0.7505314782461727 0.5" />
     </material>
   </visual>
 </link>
@@ -76,8 +78,8 @@
     <geometry>
       <box size="0.5 0.5 1.0" />
     </geometry>
-    <material name="0.5534070748757144">
-      <color rgba="0.9479057043109085 0.43610209131087774 0.980665014240638 0.5" />
+    <material name="0.6941032887285742">
+      <color rgba="0.32213894261466813 0.470072494696505 0.002542699702619222 0.5" />
     </material>
   </visual>
 </link>
