@@ -1,0 +1,79 @@
+<?xml version="1.0" ?>
+
+<robot name="bogson" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:property name="DH" value="${load_yaml('DH.yaml')}"/>
+    <xacro:property name="params" value="${load_yaml('rpy.yaml')}"/>
+
+    <link name="base">
+            <visual>
+                <geometry>
+                    <box size="${params['base]['x']} ${params['base']['y']} ${params['base']['z']}"/>
+                </geometry>
+                <origin rpy="0 0 0" xyz="0 0 ${0.5*params['base']['length']}"/>
+                <material name="magenta">
+                    <color rgba="1 0 1 0.5"/>
+                </material>
+            </visual>
+    </link>
+
+    <link name="link1">
+            <visual>
+                <geometry>
+                    <box size="${params['link1']['x']} ${params['link1']['y']} ${params['link1']['z']}"/>
+                </geometry>
+                <origin rpy="0 0 0" xyz="${0.5*params['link1']['x']} 0 ${0.5*params['link1']['z']}"/>
+                <material name="magenta">
+                    <color rgba="1 0 1 0.5"/>
+                </material>
+            </visual>
+    </link>
+
+    <joint name="base_to_link1" type="revolute">
+        <axis xyz="0 0 1"/>
+        <limit upper="5" lower="-5" effort="10" velocity="2" />
+        <parent link="base"/>
+        <child link="link1"/>
+        <origin xyz="${DH['link1']['a']} ${DH['link1']['d']*sin(DH['link1']['alfa'])*(-1)} ${DH['link1']['d']*cos(DH['link1']['alfa'])}" rpy="${(DH['link1']['alfa']*pi)/3.14 } 0 ${(DH['link1']['theta']*pi)/3.14 }"/>
+    </joint>
+
+    <link name="link2">
+            <visual>
+                <geometry>
+                    <box size="${params['link2']['x']} ${params['link2']['y']} ${params['link2']['z']}"/>
+                </geometry>
+                <origin rpy="0 0 0" xyz="${0.5*params['link2']['x']} 0 ${0.5*params['link2']['z']}"/>
+                <material name="magenta">
+                    <color rgba="1 0 1 0.5"/>
+                </material>
+            </visual>
+    </link>
+
+    <joint name="link1_to_link2" type="revolute">
+        <axis xyz="0 0 1"/>
+        <limit upper="5" lower="-5" effort="10" velocity="2" />
+        <parent link="link1"/>
+        <child link="link2"/>
+        <origin xyz="${DH['link2']['a']} ${DH['link2']['d']*sin(DH['link2']['alfa'])*(-1)} ${DH['link2']['d']*cos(DH['link2']['alfa'])}" rpy="${(DH['link2']['alfa']*pi)/3.14 } 0 ${(DH['link2']['theta']*pi)/3.14 }"/>
+    </joint>
+
+    <link name="link3">
+        <visual>
+            <geometry>
+                    <box size="${params['link3']['x']} ${params['link3']['y']} ${params['link3']['z']}"/>
+                </geometry>
+                <origin rpy="0 0 0" xyz="${0.5*params['link3']['x']} 0 ${-0.5*params['link3']['z']}"/>
+            <material name="magenta">
+                <color rgba="1 0 1 0.5"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="link2_to_link3" type="prismatic">
+        <axis xyz="0 0 1"/>
+        <limit upper="5" lower="-5" effort="10" velocity="2" />
+        <parent link="link2"/>
+        <child link="link3"/>
+        <origin xyz="${DH['link3']['a']} ${DH['link3']['d']*sin(DH['link3']['alfa'])*(-1)} ${DH['link3']['d']*cos(DH['link3']['alfa'])}" rpy="${(DH['link3']['alfa']*pi)/3.14 } 0 ${(DH['link3']['theta']*pi)/3.14 }"/>
+    </joint>
+</robot>
