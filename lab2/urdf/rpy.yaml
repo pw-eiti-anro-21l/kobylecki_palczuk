@@ -1,28 +1,28 @@
 base:
-  x: 1
+  x: 5
   y: 5
-  z: 5
-  r: 0
-  p: 0
-  y: 0
-link1:
-  x: 2
-  y: 1
   z: 1
   r: 0
   p: 0
-  y: 0
+  yaw: 0
+link1:
+  x: 1
+  y: 1
+  z: 1
+  r: 0.4
+  p: 0
+  yaw: 0
 link2:
   x: 2
   y: 1
   z: 1
-  r: 0
+  r: -0.3
   p: 0
-  y: 0
+  yaw: 0
 link3:
-  x: 1
+  x: 3
   y: 1
   z: 1
   r: 0
   p: -1.572
-  y: 0
+  yaw: 0

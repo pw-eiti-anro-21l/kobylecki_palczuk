@@ -1,15 +1,15 @@
 link1:
-  a: 2
-  d: 0
-  alpha: 0
-  theta: 0
-link2:
-  a: 2
-  d: 0
-  alpha: -1.572
-  theta: 0
-link3:
   a: 1
   d: 0
   alpha: 0
-  theta: 0
+  theta: 0.4
+link2:
+  a: 2
+  d: 0
+  alpha: 0
+  theta: -0.3
+link3:
+  a: 3
+  d: 0
+  alpha: 0
+  theta: -1.572

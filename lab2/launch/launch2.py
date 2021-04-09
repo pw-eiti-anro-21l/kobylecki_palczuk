@@ -28,17 +28,29 @@ def generate_launch_description():
           'use_sim_time',
           default_value='false',
           description='Use simulation (Gazebo) clock if true'),
+      # Node(
+      #     package='lab2', #'robot_state_publisher',
+      #     executable='wezel2',   #'robot_state_publisher',
+      #     name='wezel2',        #'robot_state_publisher',
+      #     output='screen',
+      #     parameters=[{'use_sim_time': use_sim_time, 'robot': Command(['xacro', ' ', os.path.join(get_package_share_directory('lab2'), xacro_file_name)])}]),
+          # arguments=[urdf]),
       Node(
-          package='lab2', #'robot_state_publisher',
-          executable='wezel2',   #'robot_state_publisher',
-          name='wezel2',        #'robot_state_publisher',
+          package='robot_state_publisher',
+          executable='robot_state_publisher',
+          name='robot_state_publisher',
           output='screen',
-          parameters=[{'use_sim_time': use_sim_time, 'robot': Command(['xacro', ' ', os.path.join(get_package_share_directory('lab2'), xacro_file_name)])}]),
+          parameters=[{'use_sim_time': use_sim_time,  'robot_description': Command(['xacro', ' ', os.path.join(get_package_share_directory('lab2'), xacro_file_name)])}]),
           # arguments=[urdf]),
       # Node(
       #     package='joint_state_publisher',
       #     executable='joint_state_publisher',
       #     name='joint_state_publisher'),
+      Node(
+          package='lab2',
+          executable='wezel2',
+          name='wezel2',
+          output='screen'),
       Node(
           package='rviz2',
           executable='rviz2',
