@@ -5,13 +5,10 @@ from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
-def generate_launch_description():
 
+def generate_launch_description():
   use_sim_time = LaunchConfiguration('use_sim_time', default='false')
   urdf_file_name = 'bogson.urdf.xml'
-
-  print("urdf_file_name : {}".format(urdf_file_name))
-
   urdf = os.path.join(
       get_package_share_directory('lab2'),
       urdf_file_name)
@@ -28,13 +25,17 @@ def generate_launch_description():
           output='screen',
           parameters=[{'use_sim_time': use_sim_time}],
           arguments=[urdf]),
-      # Node(
-      #     package='joint_state_publisher',
-      #     executable='joint_state_publisher',
-      #     name='joint_state_publisher'),
       Node(
           package='lab2',
           executable='wezel2',
           name='wezel2',
           output='screen'),
+      Node(
+          package='rviz2',
+          executable='rviz2',
+          name='bogson_rviz2',
+          output='screen',
+          parameters=[{'use_sim_time': use_sim_time,}],
+          arguments=['-d', os.path.join(get_package_share_directory('lab2'), 'bogson.rviz')],
+          )
   ])
