@@ -1,7 +1,7 @@
 <robot name="bogson" xmlns:xacro="http://www.ros.org/wiki/xacro">
   
   <!-- BGN - Include -->
-  <xacro:include filename="$(find lab2)/bogson_template.urdf.xacro" />
+  <xacro:include filename="$(find lab2)/bogson_template.urdf.xacro"/>
   <!-- END - Include -->
 
   <xacro:property name="parameters" value="${load_yaml(find lab2)/parameters.yaml)}" />
@@ -10,66 +10,66 @@
   <xacro:property name="a3" value="${parameters['a3']}" />
 
   <!-- BGN - Robot description -->
-  <xacro:link name="base"
+  <xacro:_link name="base"
     originxyz="0 0 0"
     dimensions="5 5 1">
-  </xacro:link>
+  </xacro:_link>
 
-  <xacro:link name="link1"
+  <xacro:_link name="link1"
     originxyz="0 0 ${a1/2}"
     dimensions="1 1 ${a1}">
-  </xacro:link>
+  </xacro:_link>
 
-  <xacro:joint name="base_to_link1"
+  <xacro:_joint name="base_to_link1"
     type="revolute"
     axis="0 0 1"
     originrpy="0 0 0"
     originxyz="0 0 1"
     parent="base" 
     child="link1">
-  </xacro:joint>
+  </xacro:_joint>
 
-  <xacro:link name="link2"
+  <xacro:_link name="link2"
     originxyz="0 0 ${a2/2}"
     dimensions="1 1 ${a2}">
-  </xacro:link>
+  </xacro:_link>
 
-  <xacro:joint name="link1_to_link2" 
+  <xacro:_joint name="link1_to_link2" 
     type="revolute"
     axis="0 0 1"
     originrpy="0 0 ${1.57075}"
     originxyz="0 0 ${a1}"
     parent="link1"
     child="link2">
-  </xacro:joint>
+  </xacro:_joint>
 
-  <xacro:link name="link3"
+  <xacro:_link name="link3"
     originxyz="0 0 ${a3/2}"  
     dimensions="1 1 ${a3}">
-  </xacro:link>
+  </xacro:_link>
 
-  <xacro:joint name="link2_to_link3" 
+  <xacro:_joint name="link2_to_link3" 
     type="revolute"
     axis="0 0 1"
     originrpy="0 0 0"
     originxyz="0 0 ${a2}"
     parent="link2"
     child="link3">
-  </xacro:joint>
+  </xacro:_joint>
 
-  <xacro:link name="narzedzie"
+  <xacro:_link name="narzedzie"
     originxyz="0 0 0.5"
-    dimensions = "1 1 1">
-  </xacro:link>
+    dimensions="1 1 1">
+  </xacro:_link>
 
-  <xacro:joint name="link3_to_narzedzie" 
+  <xacro:_joint name="link3_to_narzedzie" 
     type="revolute"
     axis="0 0 1"
     originrpy="0 0 0"
     originxyz="0 0 ${a3}"
     parent="link3"
     child="narzedzie">
-  </xacro:joint>
+  </xacro:_joint>
 
   <!-- END - Robot description -->
 

@@ -1,9 +1,9 @@
 <robot name="bogson" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <xacro:property name="DH" value="${load_yaml('DH.yaml')}"/>
-    <xacro:property name="params" value="${load_yaml('rpy.yaml')}"/>
+    <!-- <xacro:property name="DH" value="${load_yaml('DH.yaml')}"/>
+    <xacro:property name="params" value="${load_yaml('rpy.yaml')}"/> -->
 
-    <xacro:macro name="link" params="name originxyz dimensions">
+    <xacro:macro name="_link" params="name dimensions originxyz">
         <link name="${name}">
             <visual>
                 <geometry>
@@ -17,10 +17,10 @@
         </link>
     </xacro:macro>
 
-    <xacro:macro name="joint" params=" name type axis parent child originxyz originrpy">
+    <xacro:macro name="_joint" params=" name type axis parent child originxyz originrpy">
         <joint name="${name}" type="${type}">
             <axis xyz="${axis}"/>
-            <limit upper="3.1415" lower="-3.1415" effort="10" velocity="2" />
+            <limit upper="3.1415" lower="-3.1415" effort="10" velocity="2"/>
             <parent link="${parent}"/>
             <child link="${child}"/>
             <origin xyz="${originxyz}" rpy="${originrpy}"/>
