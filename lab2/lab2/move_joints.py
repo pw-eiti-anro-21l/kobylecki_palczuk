@@ -23,6 +23,7 @@ class StatePublisher(Node):
     def __init__(self):
         rclpy.init()
         super().__init__('state_publisher')
+        self.going_back = False
 
         qos_profile = QoSProfile(depth=10)
         self.joint_pub = self.create_publisher(JointState, 'joint_states', qos_profile)
@@ -41,10 +42,10 @@ class StatePublisher(Node):
         self.pos2 = (self.get_parameter('pos2').get_parameter_value().double_value)
         self.pos3 = (self.get_parameter('pos3').get_parameter_value().double_value)
 
-        # self.names = ["base_to_link1", "link1_to_link2", "link2_to_link3"]
-        # self.states = []
-        # for i in range(len(self.names)):
-        #     self.states.append(float(0))
+        self.names = ["base_to_link1", "link1_to_link2", "link2_to_link3"]
+        self.states = []
+        for i in range(len(self.names)):
+            self.states.append(float(0))
 
         # yml = read_from_yaml('kobylecki_palczuk/lab2/urdf/rpy.yaml')
         # joints = {"link1": "base", "link2": "link1", "link3": "link2"}
@@ -63,21 +64,21 @@ class StatePublisher(Node):
 
     def update_state(self):
         try:
-            # for i in range(len(self.states)):
-            #     if self.states[i] > pi/2:
-            #         self.going_back = True
-            #     if self.states[i] < -pi/2:
-            #         self.going_back = False
-            #     if self.going_back:
-            #         self.states[i] -= self.degree
-            #     else:
-            #         self.states[i] += self.degree
+            for i in range(len(self.states)):
+                if self.states[i] > pi/2:
+                    self.going_back = True
+                if self.states[i] < -pi/2:
+                    self.going_back = False
+                if self.going_back:
+                    self.states[i] -= self.degree
+                else:
+                    self.states[i] += self.degree
 
             # update joint_state
             now = self.get_clock().now()
             self.joint_state.header.stamp = now.to_msg()
-            # self.joint_state.name = self.names
-            # self.joint_state.position = self.states
+            self.joint_state.name = self.names
+            self.joint_state.position = self.states
 
             # update transform
             # (moving in a circle with radius=2) DO ZMIANY
@@ -89,14 +90,14 @@ class StatePublisher(Node):
 
 
             # This will adjust as needed per iteration
-            # self.loop_rate.sleep()
+            self.loop_rate.sleep()
 
-            # if self.pos1 < (self.get_parameter("pos1").get_parameter_value().double_value):
-            #     self.pos1 += 0.1
-            # if self.pos2 < (self.get_parameter("pos2").get_parameter_value().double_value):
-            #     self.pos2 += 0.1
-            # if self.pos3 < (self.get_parameter("pos3").get_parameter_value().double_value):
-            #     self.pos3 += 0.1
+            if self.pos1 < (self.get_parameter("pos1").get_parameter_value().double_value):
+                self.pos1 += 0.1
+            if self.pos2 < (self.get_parameter("pos2").get_parameter_value().double_value):
+                self.pos2 += 0.1
+            if self.pos3 < (self.get_parameter("pos3").get_parameter_value().double_value):
+                self.pos3 += 0.1
 
         except KeyboardInterrupt:
             pass
