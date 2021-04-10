@@ -1,0 +1,5 @@
+wezel2:
+  ros__parameters:
+    a1: 0.0
+    a2: 0.0
+    a3: 0.0

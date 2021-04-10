@@ -1,5 +1,15 @@
 <robot name="bogson">
 
+<link name="odom"/>
+
+<joint name="odom_to_base" type="prismatic">
+  <origin xyz="0 0.0 1.0" rpy="0.0 0 0.0"/>
+  <parent link="odom"/>
+  <child link="base"/>
+  <axis xyz="0 0 1" />
+  <limit upper="4.0" lower="2.0" effort="10" velocity="10" />
+</joint>
+
 <link name="base">
   <visual>
     <origin xyz="0 0.0 0.5" rpy="0 0 0"/>

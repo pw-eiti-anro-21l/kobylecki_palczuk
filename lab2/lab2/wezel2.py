@@ -28,18 +28,18 @@ class StatePublisher(Node):
         self.joint_pub = self.create_publisher(JointState, 'joint_states', qos_profile)
         self.broadcaster = TransformBroadcaster(self, qos=qos_profile)
         self.nodeName = self.get_name()
-        self.get_logger().info("{0} posed".format(self.nodeName))
+        self.get_logger().info("{0} started".format(self.nodeName))
 
         self.degree = pi / 180.0
         self.loop_rate = self.create_rate(30)
 
-        self.declare_parameter('pos1', 0.)
-        self.declare_parameter('pos2', 0.)
-        self.declare_parameter('pos3', 0.)
+        self.declare_parameter('a1', 0.)
+        self.declare_parameter('a2', 0.)
+        self.declare_parameter('a3', 0.)
 
-        self.pos1 = (self.get_parameter('pos1').get_parameter_value().double_value)
-        self.pos2 = (self.get_parameter('pos2').get_parameter_value().double_value)
-        self.pos3 = (self.get_parameter('pos3').get_parameter_value().double_value)
+        self.a1 = (self.get_parameter('a1').get_parameter_value().double_value)
+        self.a2 = (self.get_parameter('a2').get_parameter_value().double_value)
+        self.a3 = (self.get_parameter('a3').get_parameter_value().double_value)
 
         # self.names = ["base_to_link1", "link1_to_link2", "link2_to_link3"]
         # self.states = []
@@ -59,44 +59,39 @@ class StatePublisher(Node):
         self.odom_trans.header.frame_id = 'odom'
         self.odom_trans.child_frame_id = 'base'
         self.joint_state = JointState()
-        self.timer = self.create_timer(0.1, self.update_state)
+        self.counter = 0
+    #     self.timer = self.create_timer(10, self.update_state)
 
-    def update_state(self):
+    # def update_state(self):
         try:
-            # for i in range(len(self.states)):
-            #     if self.states[i] > pi/2:
-            #         self.going_back = True
-            #     if self.states[i] < -pi/2:
-            #         self.going_back = False
-            #     if self.going_back:
-            #         self.states[i] -= self.degree
-            #     else:
-            #         self.states[i] += self.degree
+            while rclpy.ok():
+                rclpy.spin_once(self)
 
-            # update joint_state
-            now = self.get_clock().now()
-            self.joint_state.header.stamp = now.to_msg()
-            # self.joint_state.name = self.names
-            # self.joint_state.position = self.states
+                # update joint_state
+                now = self.get_clock().now()
+                self.joint_state.header.stamp = now.to_msg()
+                self.joint_state.name = ["base_to_link1", "link1_to_link2", "link2_to_link3"]
+                self.joint_state.position = [0., 0., 0.]
 
-            # update transform
-            # (moving in a circle with radius=2) DO ZMIANY
-            self.odom_trans.header.stamp = now.to_msg()
+                # update transform
+                # (moving in a circle with radius=2) DO ZMIANY
+                self.odom_trans.header.stamp = now.to_msg()
 
-            # send the joint state and transform
-            self.joint_pub.publish(self.joint_state)
-            self.broadcaster.sendTransform(self.odom_trans)
+                # send the joint state and transform
+                self.joint_pub.publish(self.joint_state)
+                self.broadcaster.sendTransform(self.odom_trans)
 
 
-            # This will adjust as needed per iteration
-            # self.loop_rate.sleep()
+                # This will adjust as needed per iteration
+                self.loop_rate.sleep()
 
-            # if self.pos1 < (self.get_parameter("pos1").get_parameter_value().double_value):
-            #     self.pos1 += 0.1
-            # if self.pos2 < (self.get_parameter("pos2").get_parameter_value().double_value):
-            #     self.pos2 += 0.1
-            # if self.pos3 < (self.get_parameter("pos3").get_parameter_value().double_value):
-            #     self.pos3 += 0.1
+                if self.a1 < (self.get_parameter("a1").get_parameter_value().double_value):
+                    self.a1 += 0.1
+                if self.a2 < (self.get_parameter("a2").get_parameter_value().double_value):
+                    self.a2 += 0.1
+                if self.a3 < (self.get_parameter("a3").get_parameter_value().double_value):
+                    self.a3 += 0.1
+                # break
 
         except KeyboardInterrupt:
             pass
@@ -110,7 +105,7 @@ def euler_to_quaternion(roll, pitch, yaw):
 
 def main():
     node = StatePublisher()
-    rclpy.spin(node)
+    # rclpy.spin(node)
 
 if __name__ == '__main__':
     main()
