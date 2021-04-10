@@ -23,6 +23,7 @@ class StatePublisher(Node):
     def __init__(self):
         rclpy.init()
         super().__init__('state_publisher')
+        self.going_back = False
 
         qos_profile = QoSProfile(depth=10)
         self.joint_pub = self.create_publisher(JointState, 'joint_states', qos_profile)
@@ -41,33 +42,34 @@ class StatePublisher(Node):
         self.pos2 = (self.get_parameter('pos2').get_parameter_value().double_value)
         self.pos3 = (self.get_parameter('pos3').get_parameter_value().double_value)
 
-        names = []
+        self.names = ["base_to_link1", "link1_to_link2", "link2_to_link3"]
         self.states = []
+        for i in range(len(self.names)):
+            self.states.append(float(0))
 
-        yml = read_from_yaml('kobylecki_palczuk/lab2/urdf/rpy.yaml')
-        joints = {"link1": "base", "link2": "link1", "link3": "link2"}
+        # yml = read_from_yaml('kobylecki_palczuk/lab2/urdf/rpy.yaml')
+        # joints = {"link1": "base", "link2": "link1", "link3": "link2"}
 
-        for element in yml:
-            if yml[element]['j'] == "revolute":
-                names.append(joints[element] + "_to_" + element)
-                self.states.append(float(0))
+        # for element in yml:
+        #     if yml[element]['j'] == "revolute":
+        #         names.append(joints[element] + "_to_" + element)
+        #         self.states.append(float(0))
 
         # message declarations
         self.odom_trans = TransformStamped()
         self.odom_trans.header.frame_id = 'odom'
         self.odom_trans.child_frame_id = 'base'
         self.joint_state = JointState()
-        self.timer = self.create_timer(0.1, self.update_state)      
+        self.timer = self.create_timer(0.1, self.update_state)
 
     def update_state(self):
         try:
-            going_back = False
             for i in range(len(self.states)):
-                if self.states[i] > pi/2:
-                    going_back = True
-                if self.states[i] < -pi/2:
-                    going_back = False
-                if going_back:
+                if self.states[i] > pi/4:
+                    self.going_back = True
+                if self.states[i] < -pi/4:
+                    self.going_back = False
+                if self.going_back:
                     self.states[i] -= self.degree
                 else:
                     self.states[i] += self.degree
@@ -75,7 +77,7 @@ class StatePublisher(Node):
             # update joint_state
             now = self.get_clock().now()
             self.joint_state.header.stamp = now.to_msg()
-            self.joint_state.name = ["base_to_link1", "link1_to_link2", "link2_to_link3"]
+            self.joint_state.name = self.names
             self.joint_state.position = self.states
 
             # update transform

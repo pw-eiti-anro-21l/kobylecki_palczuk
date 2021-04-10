@@ -75,7 +75,7 @@
         </visual>
     </link>
 
-    <joint name="link2_to_link3" type="prismatic">
+    <joint name="link2_to_link3" type="revolute">
         <axis xyz="0 0 1"/>
         <limit upper="5" lower="-5" effort="10" velocity="2" />
         <parent link="link2"/>
