@@ -4,10 +4,10 @@
   <xacro:include filename="$(find lab2)/bogson_template.urdf.xacro"/>
   <!-- END - Include -->
 
-  <xacro:property name="parameters" value="${load_yaml(find lab2)/parameters.yaml)}" />
-  <xacro:property name="a1" value="${parameters['a1']}" />
-  <xacro:property name="a2" value="${parameters['a2']}" />
-  <xacro:property name="a3" value="${parameters['a3']}" />
+  <xacro:property name="parameters" value="${load_yaml((find lab2)/parameters.yaml)}"/>
+  <xacro:property name="a1" value="${parameters['a1']}"/>
+  <xacro:property name="a2" value="${parameters['a2']}"/>
+  <xacro:property name="a3" value="${parameters['a3']}"/>
 
   <!-- BGN - Robot description -->
   <xacro:_link name="base"
