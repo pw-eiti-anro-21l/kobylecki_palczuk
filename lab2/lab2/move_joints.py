@@ -34,13 +34,13 @@ class StatePublisher(Node):
         self.degree = pi / 180.0
         self.loop_rate = self.create_rate(30)
 
-        self.declare_parameter('pos1', 0.)
-        self.declare_parameter('pos2', 0.)
-        self.declare_parameter('pos3', 0.)
+        self.declare_parameter('a1', 0.)
+        self.declare_parameter('a2', 0.)
+        self.declare_parameter('a3', 0.)
 
-        self.pos1 = (self.get_parameter('pos1').get_parameter_value().double_value)
-        self.pos2 = (self.get_parameter('pos2').get_parameter_value().double_value)
-        self.pos3 = (self.get_parameter('pos3').get_parameter_value().double_value)
+        self.a1 = (self.get_parameter('a1').get_parameter_value().double_value)
+        self.a2 = (self.get_parameter('a2').get_parameter_value().double_value)
+        self.a3 = (self.get_parameter('a3').get_parameter_value().double_value)
 
         self.names = ["base_to_link1", "link1_to_link2", "link2_to_link3"]
         self.states = []
@@ -75,12 +75,12 @@ class StatePublisher(Node):
                 else:
                     self.states[i] += self.degree
 
-            if self.pos1 < (self.get_parameter("pos1").get_parameter_value().double_value):
-                self.pos1 = self.get_parameter("pos1").get_parameter_value().double_value
-            if self.pos2 < (self.get_parameter("pos2").get_parameter_value().double_value):
-                self.pos2 = self.get_parameter("pos2").get_parameter_value().double_value
-            if self.pos3 < (self.get_parameter("pos3").get_parameter_value().double_value):
-                self.pos3 = self.get_parameter("pos3").get_parameter_value().double_value
+            if self.a1 < (self.get_parameter("a1").get_parameter_value().double_value):
+                self.a1 = self.get_parameter("a1").get_parameter_value().double_value
+            if self.a2 < (self.get_parameter("a2").get_parameter_value().double_value):
+                self.a2 = self.get_parameter("a2").get_parameter_value().double_value
+            if self.a3 < (self.get_parameter("a3").get_parameter_value().double_value):
+                self.a3 = self.get_parameter("a3").get_parameter_value().double_value
 
             # update joint_state
             now = self.get_clock().now()
