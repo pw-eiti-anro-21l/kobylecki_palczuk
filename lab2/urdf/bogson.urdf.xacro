@@ -13,8 +13,8 @@
   </xacro:m_link>
 
   <xacro:m_link name="link1"
-    originxyz="0 0 ${ajeden/2}"
-    dimensions="1 1 ${ajeden}">
+    originxyz="0 0 ${a1/2}"
+    dimensions="1 1 ${a1}">
   </xacro:m_link>
 
   <xacro:joint name="base_to_link1"
@@ -27,29 +27,29 @@
   </xacro:joint>
 
   <xacro:m_link name="link2"
-    originxyz="0 0 ${adwa/2}"
-    dimensions="1 1 ${adwa}">
+    originxyz="0 0 ${a2/2}"
+    dimensions="1 1 ${a2}">
   </xacro:m_link>
 
   <xacro:joint name="link1_to_link2" 
     type="revolute"
     axis="0 0 1"
     originrpy="0 0 ${1.57075}"
-    originxyz="0 0 ${ajeden}"
+    originxyz="0 0 ${a1}"
     parent="link1"
     child="link2">
   </xacro:joint>
 
   <xacro:m_link name="link3"
-    originxyz="0 0 ${atrzy/2}"  
-    dimensions="1 1 ${atrzy}">
+    originxyz="0 0 ${a3/2}"  
+    dimensions="1 1 ${a3}">
   </xacro:m_link>
 
   <xacro:joint name="link2_to_link3" 
     type="revolute"
     axis="0 0 1"
     originrpy="0 0 0"
-    originxyz="0 0 ${adwa}"
+    originxyz="0 0 ${a2}"
     parent="link2"
     child="link3">
   </xacro:joint>
@@ -63,7 +63,7 @@
     type="revolute"
     axis="0 0 1"
     originrpy="0 0 0"
-    originxyz="0 0 ${atrzy}"
+    originxyz="0 0 ${a3}"
     parent="link3"
     child="narzedzie">
   </xacro:joint>
