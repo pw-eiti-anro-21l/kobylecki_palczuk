@@ -36,7 +36,7 @@
     </joint> -->
 
     <joint name="base_to_link1" type="revolute">
-        <axis xyz="0 0 1"/>
+        <axis xyz="1 0 0"/>
         <limit upper="5" lower="-5" effort="10" velocity="2" />
         <parent link="base"/>
         <child link="link1"/>
@@ -56,7 +56,7 @@
     </link>
 
     <joint name="link1_to_link2" type="revolute">
-        <axis xyz="0 0 1"/>
+        <axis xyz="1 0 0"/>
         <limit upper="5" lower="-5" effort="10" velocity="2" />
         <parent link="link1"/>
         <child link="link2"/>
@@ -76,10 +76,28 @@
     </link>
 
     <joint name="link2_to_link3" type="revolute">
-        <axis xyz="0 0 1"/>
+        <axis xyz="1 0 0"/>
         <limit upper="5" lower="-5" effort="10" velocity="2" />
         <parent link="link2"/>
         <child link="link3"/>
         <origin xyz="${DH['link2']['d']*cos(DH['link2']['theta'])} ${DH['link2']['d']*sin(DH['link2']['theta'])*(-1)}  ${DH['link2']['a']}" rpy="${(DH['link3']['theta']*pi)/3.14 } 0 ${(DH['link3']['alpha']*pi)/3.14 }"/>
+    </joint>
+
+    <link name="narzedzie">
+        <visual>
+            <geometry>
+                    <sphere radius="1"/>
+                </geometry>
+                <origin rpy="0 0 0" xyz="0 0 1"/>
+            <material name="magenta">
+                <color rgba="1 0 1 0.5"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="link3_to_narzedzie" type="fixed">
+        <parent link="link3"/>
+        <child link="narzedzie"/>
+        <origin xyz="${DH['link3']['d']*cos(DH['link3']['theta'])} ${DH['link3']['d']*sin(DH['link3']['theta'])*(-1)}  ${DH['link3']['a']}" rpy="0 0 0"/>
     </joint>
 </robot>

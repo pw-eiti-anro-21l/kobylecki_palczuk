@@ -70,4 +70,22 @@
         <child link="link3"/>
         <origin xyz="${DH['link2']['d']*cos(DH['link2']['theta'])} ${DH['link2']['d']*sin(DH['link2']['theta'])*(-1)}  ${DH['link2']['a']}" rpy="${(DH['link3']['theta']*pi)/3.14 } 0 ${(DH['link3']['alpha']*pi)/3.14 }"/>
     </joint>
+
+    <link name="narzedzie">
+        <visual>
+            <geometry>
+                    <sphere radius="1"/>
+                </geometry>
+                <origin rpy="0 0 0" xyz="0 0 1"/>
+            <material name="magenta">
+                <color rgba="1 0 1 0.5"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="link3_to_narzedzie" type="fixed">
+        <parent link="link3"/>
+        <child link="narzedzie"/>
+        <origin xyz="${DH['link3']['d']*cos(DH['link3']['theta'])} ${DH['link3']['d']*sin(DH['link3']['theta'])*(-1)}  ${DH['link3']['a']}" rpy="0 0 0"/>
+    </joint>
 </robot>

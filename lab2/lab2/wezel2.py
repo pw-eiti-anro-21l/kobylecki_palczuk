@@ -65,9 +65,9 @@ class StatePublisher(Node):
     def update_state(self):
         try:
             for i in range(len(self.states)):
-                if self.states[i] > pi/4:
+                if self.states[i] > pi/2:
                     self.going_back = True
-                if self.states[i] < -pi/4:
+                if self.states[i] < -pi/2:
                     self.going_back = False
                 if self.going_back:
                     self.states[i] -= self.degree
