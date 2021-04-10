@@ -5,6 +5,7 @@ base:
   r: 0
   p: 0
   yaw: 0
+  j: "fixed"
 link1:
   x: 1
   y: 1
@@ -12,6 +13,7 @@ link1:
   r: 0.4
   p: 0
   yaw: 0
+  j: "revolute"
 link2:
   x: 2
   y: 1
@@ -19,6 +21,7 @@ link2:
   r: -0.3
   p: 0
   yaw: 0
+  j: "revolute"
 link3:
   x: 3
   y: 1
@@ -26,3 +29,4 @@ link3:
   r: 0
   p: -1.572
   yaw: 0
+  j: "revolute"

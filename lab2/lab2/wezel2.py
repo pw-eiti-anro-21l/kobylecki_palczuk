@@ -11,6 +11,12 @@ import csv
 import math
 import os
 import random
+import yaml
+
+def read_from_yaml(filename):
+    with open(filename, 'r') as file:
+        reader = yaml.load(file, Loader=yaml.FullLoader)
+    return reader
 
 class StatePublisher(Node):
 
@@ -24,7 +30,7 @@ class StatePublisher(Node):
         self.nodeName = self.get_name()
         self.get_logger().info("{0} posed".format(self.nodeName))
 
-        degree = pi / 180.0
+        self.degree = pi / 180.0
         self.loop_rate = self.create_rate(30)
 
         self.declare_parameter('pos1', 0.)
@@ -35,20 +41,42 @@ class StatePublisher(Node):
         self.pos2 = (self.get_parameter('pos2').get_parameter_value().double_value)
         self.pos3 = (self.get_parameter('pos3').get_parameter_value().double_value)
 
+        names = []
+        self.states = []
+
+        yml = read_from_yaml('kobylecki_palczuk/lab2/urdf/rpy.yaml')
+        joints = {"link1": "base", "link2": "link1", "link3": "link2"}
+
+        for element in yml:
+            if yml[element]['j'] == "revolute":
+                names.append(joints[element] + "_to_" + element)
+                self.states.append(float(0))
+
         # message declarations
         self.odom_trans = TransformStamped()
         self.odom_trans.header.frame_id = 'odom'
         self.odom_trans.child_frame_id = 'base'
         self.joint_state = JointState()
-        self.timer = self.create_timer(0.1, self.update_state) 
+        self.timer = self.create_timer(0.1, self.update_state)      
+
     def update_state(self):
         try:
+            going_back = False
+            for i in range(len(self.states)):
+                if self.states[i] > pi/2:
+                    going_back = True
+                if self.states[i] < -pi/2:
+                    going_back = False
+                if going_back:
+                    self.states[i] -= self.degree
+                else:
+                    self.states[i] += self.degree
 
             # update joint_state
             now = self.get_clock().now()
             self.joint_state.header.stamp = now.to_msg()
             self.joint_state.name = ["base_to_link1", "link1_to_link2", "link2_to_link3"]
-            self.joint_state.position = [self.pos1, self.pos2, self.pos3]
+            self.joint_state.position = self.states
 
             # update transform
             # (moving in a circle with radius=2) DO ZMIANY
