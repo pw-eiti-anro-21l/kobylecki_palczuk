@@ -7,7 +7,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
   use_sim_time = LaunchConfiguration('use_sim_time', default='false')
-  xacro_file_name = 'bogson.urdf.xacro'
+  xacro_file_name = 'bogson_move.urdf.xacro.xml'
   return LaunchDescription([
       DeclareLaunchArgument(
           'use_sim_time',
