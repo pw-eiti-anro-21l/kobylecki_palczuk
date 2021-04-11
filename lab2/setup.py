@@ -25,7 +25,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'wezel2 = lab2.wezel2:main'
+            'wezel2 = lab2.wezel2:main',
             'move_joints = lab2.move_joints:main'
         ],
     },
