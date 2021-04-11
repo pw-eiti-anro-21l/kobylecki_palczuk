@@ -64,7 +64,6 @@ class StatePublisher(Node):
 
     def update_state(self):
         try:
-            # while rclpy.ok():
             for i in range(len(self.states)):
                 if self.states[i] > pi/2:
                     self.going_back = True
@@ -74,13 +73,6 @@ class StatePublisher(Node):
                     self.states[i] -= self.degree
                 else:
                     self.states[i] += self.degree
-
-            if self.pos1 < (self.get_parameter("pos1").get_parameter_value().double_value):
-                self.pos1 = self.get_parameter("pos1").get_parameter_value().double_value
-            if self.pos2 < (self.get_parameter("pos2").get_parameter_value().double_value):
-                self.pos2 = self.get_parameter("pos2").get_parameter_value().double_value
-            if self.pos3 < (self.get_parameter("pos3").get_parameter_value().double_value):
-                self.pos3 = self.get_parameter("pos3").get_parameter_value().double_value
 
             # update joint_state
             now = self.get_clock().now()
@@ -94,10 +86,18 @@ class StatePublisher(Node):
 
             # send the joint state and transform
             self.joint_pub.publish(self.joint_state)
-            self.broadcaster.sendTransform(self.odom_trans)                
+            self.broadcaster.sendTransform(self.odom_trans)
+
 
             # This will adjust as needed per iteration
-            # self.loop_rate.sleep()
+            self.loop_rate.sleep()
+
+            if self.pos1 < (self.get_parameter("pos1").get_parameter_value().double_value):
+                self.pos1 += 0.1
+            if self.pos2 < (self.get_parameter("pos2").get_parameter_value().double_value):
+                self.pos2 += 0.1
+            if self.pos3 < (self.get_parameter("pos3").get_parameter_value().double_value):
+                self.pos3 += 0.1
 
         except KeyboardInterrupt:
             pass
