@@ -3,13 +3,13 @@
     <xacro:property name="DH" value="${load_yaml('DH.yaml')}"/>
     <xacro:property name="params" value="${load_yaml('rpy.yaml')}"/>
 
-    <xacro:macro name="link" params="name originxyz dimensions">
+    <xacro:macro name="link" params="name originxyz originrpy dimensions">
         <link name="${name}">
             <visual>
                 <geometry>
                     <box size="${dimensions}"/>
                 </geometry>
-                <origin rpy="0 0 0" xyz="${originxyz}"/>
+                <origin rpy="${originrpy}" xyz="${originxyz}"/>
                 <material name="magenta">
                     <color rgba="1 0 1 0.5"/>
                 </material>
@@ -18,9 +18,9 @@
     </xacro:macro>
 
     <xacro:macro name="joint" params=" name type axis parent child originxyz originrpy">
-        <joint name="${name}" type="${type}">
+        <joint name="base_to_link1" type="revolute">
             <axis xyz="${axis}"/>
-            <limit upper="3.1415" lower="-3.1415" effort="10" velocity="2" />
+            <limit upper="5" lower="-5" effort="10" velocity="2" />
             <parent link="${parent}"/>
             <child link="${child}"/>
             <origin xyz="${originxyz}" rpy="${originrpy}"/>

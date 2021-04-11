@@ -6,71 +6,96 @@
 
   <xacro:property name="parameters" value="${load_yaml(find lab2)/parameters.yaml)}" />
   <xacro:property name="a1" value="${parameters['a1']}" />
-  <xacro:property name="a2" value="${parameters['a2']}" />
-  <xacro:property name="a3" value="${parameters['a3']}" />
+  <xacro:property name="a2" value="${parameters['a1']}" />
+  <xacro:property name="a3" value="${parameters['a1']}" />
+
+  
 
   <!-- BGN - Robot description -->
   <xacro:link name="base"
+    originrpy="0 0 0"
     originxyz="0 0 0"
-    dimensions="5 5 1">
+    size="1 1 0.1" 
+    material="magenta"
+    color="1 0 1 0.5">
   </xacro:link>
-
-  <xacro:link name="link1"
-    originxyz="0 0 ${a1/2}"
-    dimensions="1 1 ${a1}">
-  </xacro:link>
-
-  <xacro:joint name="base_to_link1"
+              
+  <xacro:joint name="base_to_link1" 
     type="revolute"
-    axis="0 0 1"
-    originrpy="0 0 0"
-    originxyz="0 0 1"
+    axis_xyz="0 0 1"
+    originrpy="0 0 0" 
+    originxyz="0 0 0.05"
     parent="base" 
-    child="link1">
+    child="link1"
+    limitlow="-1.57" limithigh="1.57">
   </xacro:joint>
-
-  <xacro:link name="link2"
-    originxyz="0 0 ${a2/2}"
-    dimensions="1 1 ${a2}">
+           
+  <xacro:link name="link1"
+    originxyz="${a1/2} 0 0"
+    originrpy="0 0 0" 
+    radius="0.05"
+    length="${a1}"
+    material="magenta"
+    color="1 0 1 0.5">
   </xacro:link>
 
-  <xacro:joint name="link1_to_link2" 
+  <xacro:joint name="link1-arm" 
     type="revolute"
-    axis="0 0 1"
-    originrpy="0 0 ${1.57075}"
-    originxyz="0 0 ${a1}"
-    parent="link1"
-    child="link2">
+    axis_xyz="0 0 1"
+    originrpy="${-pi/2} 0 0" 
+    originxyz="0 0 0"
+    parent="link1" 
+    child="arm"
+    limitlow="-1.57" limithigh="1.57">
   </xacro:joint>
-
-  <xacro:link name="link3"
-    originxyz="0 0 ${a3/2}"  
-    dimensions="1 1 ${a3}">
+           
+  <xacro:link name="arm"
+    originxyz="${pos2/2} 0 0"  
+    originrpy="0 ${pi/2} 0" 
+    radius="0.05"
+    length="${pos2}"
+    material="magenta"
+    color="1 0 1 0.5">
   </xacro:link>
 
-  <xacro:joint name="link2_to_link3" 
+  <xacro:joint name="arm-hand" 
     type="revolute"
-    axis="0 0 1"
-    originrpy="0 0 0"
-    originxyz="0 0 ${a2}"
-    parent="link2"
-    child="link3">
+    axis_xyz="0 0 1"
+    originrpy="${-pi/2} 0 0" 
+    originxyz="${a2} 0 0"
+    parent="arm" 
+    child="hand"
+    limitlow="-2.90" limithigh="2.90">
   </xacro:joint>
-
-  <xacro:link name="narzedzie"
-    originxyz="0 0 0.5"
-    dimensions = "1 1 1">
+           
+  <xacro:link name="hand"
+    originxyz="${a3/2} 0 ${d3/2}"  
+    originrpy="0 ${pi/2} 0" 
+    radius="0.05"
+    length="${a3}"
+    material="magenta"
+    color="1 0 1 0.5">
   </xacro:link>
 
   <xacro:joint name="link3_to_narzedzie" 
     type="revolute"
-    axis="0 0 1"
-    originrpy="0 0 0"
-    originxyz="0 0 ${a3}"
-    parent="link3"
-    child="narzedzie">
+    axis_xyz="0 0 1"
+    originrpy="0 0 0" 
+    originxyz="${a3} 0 0"
+    parent="hand" 
+    child="tool"
+    limitlow="0" limithigh="0">
   </xacro:joint>
 
+  <xacro:link name="narzedzie"
+    originxyz="0 0 0"
+    originrpy="0 0 0"
+    size = 0.5 0.5 2">
+  </xacro:link>
+
+
+              
   <!-- END - Robot description -->
+    
 
 </robot>
