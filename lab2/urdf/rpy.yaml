@@ -7,18 +7,18 @@ base:
   yaw: 0
   j: "fixed"
 link1:
-  x: 1
+  x: 3
   y: 1
   z: 1
-  r: 0.4
+  r: 0
   p: 0
   yaw: 0
   j: "revolute"
 link2:
-  x: 2
+  x: 3
   y: 1
   z: 1
-  r: -0.3
+  r: 0
   p: 0
   yaw: 0
   j: "revolute"
@@ -27,14 +27,14 @@ link3:
   y: 1
   z: 1
   r: 0
-  p: -1.572
-  yaw: 0
-  j: "revolute"
-  narzedzie:
-  x: 3
-  y: 1
-  z: 1
-  r: 0
   p: 0
   yaw: 0
-  j: "fixed"
+  j: "revolute"
+# narzedzie:
+#   x: 3
+#   y: 1
+#   z: 1
+#   r: 0
+#   p: 0
+#   yaw: 0
+#   j: "fixed"
