@@ -3,14 +3,13 @@
 <robot name="bogson" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:property name="DH" value="${load_yaml('DH.yaml')}"/>
-    <xacro:property name="params" value="${load_yaml('rpy.yaml')}"/>
 
     <link name="base">
         <visual>
             <geometry>
-                <box size="${params['base']['x']} ${params['base']['y']} ${params['base']['z']}"/>
+                <box size="5 5 0.5"/>
             </geometry>
-            <origin rpy="0 0 0" xyz="0 0 ${0.5*params['base']['z']}"/>
+            <origin rpy="0 0 0" xyz="0 0 ${0.25}"/>
             <material name="magenta">
                 <color rgba="1 0 1 0.5"/>
             </material>
@@ -20,9 +19,9 @@
     <link name="link1">
         <visual>
             <geometry>
-                <box size="${params['link1']['x']} ${params['link1']['y']} ${params['link1']['z']}"/>
+                <box size="${DH['link1']['a']} 1 1"/>
             </geometry>
-            <origin rpy="0 0 0" xyz="${0.5*params['link1']['x']} 0 0"/>
+            <origin rpy="0 0 0" xyz="${0.5*DH['link1']['a']} 0 0"/>
             <material name="magenta">
                 <color rgba="1 0 1 0.5"/>
             </material>
@@ -38,9 +37,9 @@
     <link name="link2">
         <visual>
             <geometry>
-                <box size="${params['link2']['x']} ${params['link2']['y']} ${params['link2']['z']}"/>
+                <box size="${DH['link2']['a']} 1 1"/>
             </geometry>
-            <origin rpy="0 0 0" xyz="${0.5*params['link2']['x']} 0 0"/>
+            <origin rpy="0 0 0" xyz="${0.5*DH['link2']['a']} 0 0"/>
             <material name="magenta">
                 <color rgba="1 0 1 0.5"/>
             </material>
@@ -56,9 +55,9 @@
     <link name="link3">
         <visual>
             <geometry>
-                    <box size="${params['link3']['x']} ${params['link3']['y']} ${params['link3']['z']}"/>
+                    <box size="${DH['link3']['a']} 1 1"/>
                 </geometry>
-                <origin rpy="0 0 0" xyz="${0.5*params['link3']['x']} 0 0"/>
+                <origin rpy="0 0 0" xyz="${0.5*DH['link3']['a']} 0 0"/>
             <material name="magenta">
                 <color rgba="1 0 1 0.5"/>
             </material>

@@ -8,18 +8,8 @@ from launch_ros.actions import Node
 def generate_launch_description():
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
-    # urdf_file_name = 'bogson.urdf.xml'
     rviz2_file_name = 'bogson.rviz'
     xacro_file_name = 'bogson_fixed.urdf.xacro.xml'
-    # print(os.path.join(get_package_share_directory('lab2'), xacro_file_name))
-    # print(os.path.join(get_package_share_directory('lab2'), rviz2_file_name))
-    # rviz2 = os.path.join(get_package_share_directory('lab2'), rviz2_file_name)
-    # xacro = os.path.join(get_package_share_directory('lab2'), xacro_file_name)
-    # xacro = 'install/lab2/share/lab2/bogson_fixed.urdf.xacro.xml'
-    # print("urdf_file_name : {}".format(urdf_file_name))
-    # urdf = os.path.join(
-    #     get_package_share_directory('lab2'),
-    #     urdf_file_name)
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -38,7 +28,7 @@ def generate_launch_description():
             executable='robot_state_publisher',
             name='robot_state_publisher',
             output='screen',
-            parameters=[{'use_sim_time': use_sim_time, 'robot_description': Command(['xacro', ' ', os.path.join(get_package_share_directory('lab2'), xacro_file_name)])}]),
+            parameters=[{'use_sim_time': use_sim_time, 'robot_description': Command(['xacro', ' ', os.path.join(get_package_share_directory('lab2'), xacro_file_name)])}, {os.path.join(get_package_share_directory('lab2'), 'DH.yaml'), os.path.join(get_package_share_directory('lab2'), 'rpy.yaml')}]),
             # arguments=[urdf]),
         # Node(
         #     package='joint_state_publisher',
@@ -49,7 +39,7 @@ def generate_launch_description():
             executable='wezel2',
             name='wezel2',
             output='screen',
-            parameters=[{os.path.join(get_package_share_directory('lab2'), 'parameters.yaml')}])
+            parameters=[{os.path.join(get_package_share_directory('lab2'), 'DH.yaml'), os.path.join(get_package_share_directory('lab2'), 'rpy.yaml')}])
         # Node(
         #     package='rviz2',
         #     executable='rviz2',

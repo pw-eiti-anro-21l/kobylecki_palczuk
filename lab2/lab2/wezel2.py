@@ -33,14 +33,6 @@ class StatePublisher(Node):
         self.degree = pi / 180.0
         self.loop_rate = self.create_rate(30)
 
-        self.declare_parameter('pos1', 0.)
-        self.declare_parameter('pos2', 0.)
-        self.declare_parameter('pos3', 0.)
-
-        self.pos1 = (self.get_parameter('pos1').get_parameter_value().double_value)
-        self.pos2 = (self.get_parameter('pos2').get_parameter_value().double_value)
-        self.pos3 = (self.get_parameter('pos3').get_parameter_value().double_value)
-
         # self.names = ["base_to_link1", "link1_to_link2", "link2_to_link3"]
         # self.states = []
         # for i in range(len(self.names)):
@@ -48,6 +40,14 @@ class StatePublisher(Node):
 
         # yml = read_from_yaml('kobylecki_palczuk/lab2/urdf/rpy.yaml')
         # joints = {"link1": "base", "link2": "link1", "link3": "link2"}
+
+        # self.declare_parameter('a1', 0.)
+        # self.declare_parameter('a2', 0.)
+        # self.declare_parameter('a3', 0.)
+
+        # self.a1 = self.get_parameter('a1').get_parameter_value().double_value
+        # self.a2 = self.get_parameter('a2').get_parameter_value().double_value
+        # self.a3 = self.get_parameter('a3').get_parameter_value().double_value
 
         # for element in yml:
         #     if yml[element]['j'] == "revolute":
@@ -59,44 +59,22 @@ class StatePublisher(Node):
         self.odom_trans.header.frame_id = 'odom'
         self.odom_trans.child_frame_id = 'base'
         self.joint_state = JointState()
+        # self.joint_state.names = names
         self.timer = self.create_timer(0.1, self.update_state)
 
     def update_state(self):
         try:
-            # for i in range(len(self.states)):
-            #     if self.states[i] > pi/2:
-            #         self.going_back = True
-            #     if self.states[i] < -pi/2:
-            #         self.going_back = False
-            #     if self.going_back:
-            #         self.states[i] -= self.degree
-            #     else:
-            #         self.states[i] += self.degree
 
             # update joint_state
             now = self.get_clock().now()
             self.joint_state.header.stamp = now.to_msg()
-            # self.joint_state.name = self.names
-            # self.joint_state.position = self.states
 
             # update transform
-            # (moving in a circle with radius=2) DO ZMIANY
             self.odom_trans.header.stamp = now.to_msg()
 
             # send the joint state and transform
             self.joint_pub.publish(self.joint_state)
             self.broadcaster.sendTransform(self.odom_trans)
-
-
-            # This will adjust as needed per iteration
-            # self.loop_rate.sleep()
-
-            # if self.pos1 < (self.get_parameter("pos1").get_parameter_value().double_value):
-            #     self.pos1 += 0.1
-            # if self.pos2 < (self.get_parameter("pos2").get_parameter_value().double_value):
-            #     self.pos2 += 0.1
-            # if self.pos3 < (self.get_parameter("pos3").get_parameter_value().double_value):
-            #     self.pos3 += 0.1
 
         except KeyboardInterrupt:
             pass
