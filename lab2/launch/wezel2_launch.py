@@ -34,12 +34,12 @@ def generate_launch_description():
         #     package='joint_state_publisher',
         #     executable='joint_state_publisher',
         #     name='joint_state_publisher'),
-        Node(
-            package='lab2',
-            executable='wezel2',
-            name='wezel2',
-            output='screen',
-            parameters=[{os.path.join(get_package_share_directory('lab2'), 'DH.yaml'), os.path.join(get_package_share_directory('lab2'), 'rpy.yaml')}])
+        # Node(
+        #     package='lab2',
+        #     executable='wezel2',
+        #     name='wezel2',
+        #     output='screen',
+        #     parameters=[{os.path.join(get_package_share_directory('lab2'), 'DH.yaml'), os.path.join(get_package_share_directory('lab2'), 'rpy.yaml')}])
         # Node(
         #     package='rviz2',
         #     executable='rviz2',
