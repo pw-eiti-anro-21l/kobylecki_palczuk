@@ -23,5 +23,11 @@ def generate_launch_description():
             name='bogson_rviz2',
             output='screen',
             parameters=[{'use_sim_time': use_sim_time,}],
-            arguments=['-d', os.path.join(get_package_share_directory('lab2'), rviz2_file_name)])
+            arguments=['-d', os.path.join(get_package_share_directory('lab2'), rviz2_file_name)]),
+        Node(
+            package='robot_state_publisher',
+            executable='robot_state_publisher',
+            name='robot_state_publisher',
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time, 'robot_description': Command(['xacro', ' ', os.path.join(get_package_share_directory('lab2'), xacro_file_name)])}])
     ])
