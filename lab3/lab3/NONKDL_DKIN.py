@@ -84,8 +84,7 @@ class NONKDL_DKIN(Node):
         alpha = self.rotateX(alpha)
         theta = self.rotateZ(theta)
         vec = makeVector(x, 0, z)
-        ans = theta * alpha + vec
-        return ans
+        return numpy.matmul(theta, alpha) + vec
 
 def main():
     print('Hi from lab3.')
