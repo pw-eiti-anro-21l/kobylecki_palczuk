@@ -18,14 +18,14 @@ def read_from_yaml(filename):
     return reader
 
 # chyba niepotrzebne? narazie nie używamy
-def transformacja():
-    yml = read_from_yaml('kobylecki_palczuk/lab2/urdf/rpy.yaml')
+# def transformacja():
+#     yml = read_from_yaml('kobylecki_palczuk/lab2/urdf/rpy.yaml')
 
-    for element in yml:
-        a = yml[element]['a']
-        alpha = yml[element]['alpha']
-        theta = yml[element]['theta']
-        x = x + a
+#     for element in yml:
+#         a = yml[element]['a']
+#         alpha = yml[element]['alpha']
+#         theta = yml[element]['theta']
+#         x = x + a
 
 def euler_to_quaternion(roll, pitch, yaw):
     qx = math.sin(roll/2) * math.cos(pitch/2) * math.cos(yaw/2) - math.cos(roll/2) * math.sin(pitch/2) * math.sin(yaw/2)
@@ -92,8 +92,8 @@ class NONKDL_DKIN(Node):
         self.positions = msg.position
 
     # zły pomysł chyba
-    def makeVector(self, x, y, z):
-        return numpy.array([[x], [y], [z], [1]])
+    # def makeVector(self, x, y, z):
+    #     return numpy.array([[x], [y], [z], [1]])
 
     def makeTransMatrix(self, x, y, z):
         # return numpy.array([[0, 0, 0, x], [0, 0, 0, y], [0, 0, 0, z], [0, 0, 0, 1]])
@@ -104,26 +104,26 @@ class NONKDL_DKIN(Node):
         return matr
 
     # te też chyba są złym pomysłem i niepotrzebne
-    def transformX(self, a):
-        out = numpy.eye(4)
-        out[0][3] = a
-        return out
+    # def transformX(self, a):
+    #     out = numpy.eye(4)
+    #     out[0][3] = a
+    #     return out
 
-    def transformY(self, y):
-        out = numpy.eye(4)
-        out[1][3] = y
-        return out
+    # def transformY(self, y):
+    #     out = numpy.eye(4)
+    #     out[1][3] = y
+    #     return out
 
-    def transformZ(self, d):
-        out = numpy.eye(4)
-        out[2][3] = d
-        return out
+    # def transformZ(self, d):
+    #     out = numpy.eye(4)
+    #     out[2][3] = d
+    #     return out
 
     def rotateX(self, alpha):
         return numpy.array([[1, 0, 0, 0], [0, math.cos(alpha), -math.sin(alpha), 0], [0, math.sin(alpha), math.cos(alpha), 0], [0, 0, 0, 1]])
 
-    def rotateY(self, beta):
-        return numpy.array([[math.cos(beta), 0, math.sin(beta), 0], [0, 1, 0, 0], [-math.sin(beta), 0, math.cos(beta), 0], [0, 0, 0, 1]])
+    # def rotateY(self, beta):
+    #     return numpy.array([[math.cos(beta), 0, math.sin(beta), 0], [0, 1, 0, 0], [-math.sin(beta), 0, math.cos(beta), 0], [0, 0, 0, 1]])
 
     def rotateZ(self, theta):
         return numpy.array([[math.cos(theta), -math.sin(theta), 0, 0], [math.sin(theta), math.cos(theta), 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
@@ -139,7 +139,6 @@ class NONKDL_DKIN(Node):
 def main():
     wenzel = NONKDL_DKIN()
     rclpy.spin(wenzel)
-    # print('Hi from lab3.')
 
 if __name__ == '__main__':
     main()

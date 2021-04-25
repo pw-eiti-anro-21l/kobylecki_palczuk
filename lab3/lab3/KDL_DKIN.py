@@ -1,4 +1,3 @@
-import PyKDL
 import yaml
 import os
 import rclpy
@@ -12,6 +11,7 @@ from sensor_msgs.msg import JointState
 from geometry_msgs.msg import PoseStamped
 from tf2_ros import TransformBroadcaster, TransformStamped
 from rclpy.clock import ROSClock
+from PyKDL import *
 
 def read_from_yaml(filename):
     with open(filename, 'r') as file:
@@ -25,7 +25,7 @@ def euler_to_quaternion(roll, pitch, yaw):
     qw = math.cos(roll/2) * math.cos(pitch/2) * math.cos(yaw/2) + math.sin(roll/2) * math.sin(pitch/2) * math.sin(yaw/2)
     return Quaternion(x=qx, y=qy, z=qz, w=qw)
 
-class KDL_DKIN(Mode):
+class KDL_DKIN(Node):
     def __init__(self):
         rclpy.init()
         super().__init__('NONKDL_DKIN')
@@ -45,6 +45,27 @@ class KDL_DKIN(Mode):
         self.stamped.header.frame_id = 'odom'
         self.pub.publish(self.stamped)
 
-    def my_pykdl():
-        transformation = PyKDL()
-        transformation.DoRot
+    def my_pykdl(self):
+        params = read_from_yaml(self.filename)
+        gengis = Chain()
+        fr = Frame()
+        for element in params:
+            gengis.addSegment(Joint(Joint.RotZ), fr.DH(element['a'], element['alpha'], element['d'], element['theta'])) #do zmiany wartosci w wektorze
+        jnts = JntArray(3)
+        for i, element in enumerate(self.positions):
+            jnts[i] = element
+        solvepls = ChainFkSolverPos_recursive(chain)
+        solvepls.JntToCart(jnts, fr)
+        xyz = fr.p
+        quack = fr.M.GetQuaternion()
+        self.stamped.pose.position.x = float(xyz[0])
+        self.stamped.pose.position.y = float(xyz[1])
+        self.stamped.pose.position.z = float(xyz[2])
+        self.stamped.pose.orientation = Quaternion(x=float(quack[0]), y=float(quack[1]), z=float(quack[2]), w=float(quack[3]))
+
+def main():
+    wenzel = KDL_DKIN()
+    rclpy.spin(wenzel)
+
+if __name__ == '__main__':
+    main()
