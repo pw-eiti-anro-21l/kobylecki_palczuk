@@ -51,9 +51,19 @@ class NONKDL_DKIN(Node):
 
             self.transformations.append(self.transform(a, d, alpha, theta))
 
+    # zły pomysł chyba
     def makeVector(self, x, y, z):
         return numpy.array([[x], [y], [z], [1]])
 
+    def makeTransMatrix(self, x, y, z):
+        # return numpy.array([[0, 0, 0, x], [0, 0, 0, y], [0, 0, 0, z], [0, 0, 0, 1]])
+        matr = numpy.zeros((4, 4))
+        matr[0][3] = x
+        matr[1][3] = y
+        matr[2][3] = z
+        return matr
+
+    # te też chyba są złym pomysłem i niepotrzebne
     def transformX(self, a):
         out = numpy.eye(4)
         out[0][3] = a
@@ -79,12 +89,12 @@ class NONKDL_DKIN(Node):
         return numpy.array([[math.cos(theta), -math.sin(theta), 0, 0], [math.sin(theta), math.cos(theta), 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
 
     def transform(self, a, d, alpha, theta):
-        x = self.transformX(a)
-        z = self.transformZ(d)
+        # x = self.transformX(a)
+        # z = self.transformZ(d)
         alpha = self.rotateX(alpha)
         theta = self.rotateZ(theta)
-        vec = makeVector(x, 0, z)
-        return numpy.matmul(theta, alpha) + vec
+        matr = self.makeTransMatrix(a, 0, d)
+        return numpy.matmul(theta, alpha) + matr
 
 def main():
     print('Hi from lab3.')
