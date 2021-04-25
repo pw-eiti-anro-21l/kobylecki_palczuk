@@ -45,8 +45,7 @@ class NONKDL_DKIN(Node):
         self.filename = filename
         self.stamped = PoseStamped()
         self.sub = self.create_subscription(JointState, 'joint_states', self.get_positions, 10)
-        self.pub = self.create_publisher(PoseStamped, 'pose_stamped_NONKDL_DKIN', 10)
-        self.publish_positions()
+        self.pub = self.create_publisher(PoseStamped, '/pose_stamped_NONKDL_DKIN', 10)
 
     def create_transformations(self):
         params = read_from_yaml(self.filename)
@@ -90,6 +89,7 @@ class NONKDL_DKIN(Node):
 
     def get_positions(self, msg):
         self.positions = msg.position
+        self.publish_positions()
 
     # zły pomysł chyba
     # def makeVector(self, x, y, z):
