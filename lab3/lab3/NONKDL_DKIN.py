@@ -67,7 +67,7 @@ class NONKDL_DKIN(Node):
     def publish_positions(self):
         self.calculate()
         self.stamped.header.stamp = self.get_clock().now().to_msg()
-        self.stamped.header.frame_id = 'base'
+        self.stamped.header.frame_id = 'odom'
         self.pub.publish(self.stamped)
 
     def calculate(self):
