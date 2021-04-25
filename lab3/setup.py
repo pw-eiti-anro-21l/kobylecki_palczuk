@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'NONKDL_DKIN = lab3.NONKDL_DKIN:main'
+            'NONKDL_DKIN = lab3.NONKDL_DKIN:main',
+            'KDL_DKIN = lab3.KDL_DKIN:main'
         ],
     },
 )
