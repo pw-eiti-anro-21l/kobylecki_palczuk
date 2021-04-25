@@ -27,29 +27,71 @@ def transformacja():
         theta = yml[element]['theta']
         x = x + a
 
+def euler_to_quaternion(roll, pitch, yaw):
+    qx = sin(roll/2) * cos(pitch/2) * cos(yaw/2) - cos(roll/2) * sin(pitch/2) * sin(yaw/2)
+    qy = cos(roll/2) * sin(pitch/2) * cos(yaw/2) + sin(roll/2) * cos(pitch/2) * sin(yaw/2)
+    qz = cos(roll/2) * cos(pitch/2) * sin(yaw/2) - sin(roll/2) * sin(pitch/2) * cos(yaw/2)
+    qw = cos(roll/2) * cos(pitch/2) * cos(yaw/2) + sin(roll/2) * sin(pitch/2) * sin(yaw/2)
+    return Quaternion(x=qx, y=qy, z=qz, w=qw)
+
 class NONKDL_DKIN(Node):
     def __init__(self, filename):
         super().__init__('NONKDL_DKIN')
         self.transformations = []
+        self.positions = []
         self.filename = filename
-        self.sub = self.create_subscription(JointState, 'joint_states', self.listen, 10)
-        transform  = self.transform(a, d, alpha, theta)
-        # trzeba cos dokonczyc
+        self.stamped = PoseStamped()
+        self.sub = self.create_subscription(JointState, 'joint_states', self.get_positions, 10)
+        self.pub = self.create_publisher(PoseStamped, 'pose_stamped_NONKDL_DKIN', 10)
+        
 
-    def listen(self, msg):
+    def create_transformations(self):
         params = read_from_yaml(self.filename)
-        self.transformations = []
+        trans = []
+        i=0
         for element in params:
             a = params[element]['a']
             d = params[element]['d']
-            theta = params[element]['theta']
             alpha = params[element]['alpha']
+            # theta = params[element]['theta']
+            theta = self.positions[i]
+            i+=1
 
             # to jest algorytm i nwm co to ani po co to
-            trans = numpy.eye(4)
-            trans[2][3] = 0.2 # o co tu chodzi wg???
+            # trans = numpy.eye(4)
+            # trans[2][3] = 0.2 # o co tu chodzi wg???
 
-            self.transformations.append(self.transform(a, d, alpha, theta))
+            trans.append(self.transform(a, d, alpha, theta))
+        self.transformations = trans
+
+    def publish_positions(self):
+        self.calculate()
+        self.stamped.header.stamp = self.get_clock().now().to_msg()
+        self.stamped.header.frame_id = 'base'
+        self.pub.publish(self.stamped)
+
+    def calculate(self):
+        self.create_transformations()
+        matrix = self.transformations[len(self.transformations)]
+        for i in range(len(self.transformations)):
+            j = len(self.transformations) - i
+            if j >= 0:
+                matrix = numpy.matmul(self.transformations[j-1], matrix)
+        narzedzie = numpy.matmul(matrix, numpy.array([[0], [0], [1], [1]]))
+        self.stamped.pose.position.x = float(narzedzie[0])
+        self.stamped.pose.position.y = float(narzedzie[1])
+        self.stamped.pose.position.z = float(narzedzie[2])
+        (r, p, y) = self.rotation_TORPY(matrix)
+        self.stamped.pose.orientation = euler_to_quaternion(r, p, y)
+
+    def rotation_TORPY(self, r):
+        gamma = math.atan2(r[2][1], r[2][2])
+        alpha = math.atan2(r[1][0], r[0][0])
+        beta = math.atan2(-r[2][0], math.sqrt(math.pow(r[2][1], 2) + math.pow(r[2][2], 2)))
+        return (gamma, beta, alpha)
+
+    def get_positions(self, msg):
+        self.positions = msg.position
 
     # zły pomysł chyba
     def makeVector(self, x, y, z):
@@ -94,9 +136,11 @@ class NONKDL_DKIN(Node):
         alpha = self.rotateX(alpha)
         theta = self.rotateZ(theta)
         matr = self.makeTransMatrix(a, 0, d)
-        return numpy.matmul(theta, alpha) + matr
+        return numpy.matmul(alpha, theta) + matr
 
 def main():
+    wenzel = NONKDL_DKIN('kobylecki_palczuk/lab3/urdf/DH.yaml')
+    rclpy.spin(wenzel)
     print('Hi from lab3.')
 
 if __name__ == '__main__':
