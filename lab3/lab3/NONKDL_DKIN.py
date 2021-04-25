@@ -28,22 +28,25 @@ def transformacja():
         x = x + a
 
 def euler_to_quaternion(roll, pitch, yaw):
-    qx = sin(roll/2) * cos(pitch/2) * cos(yaw/2) - cos(roll/2) * sin(pitch/2) * sin(yaw/2)
-    qy = cos(roll/2) * sin(pitch/2) * cos(yaw/2) + sin(roll/2) * cos(pitch/2) * sin(yaw/2)
-    qz = cos(roll/2) * cos(pitch/2) * sin(yaw/2) - sin(roll/2) * sin(pitch/2) * cos(yaw/2)
-    qw = cos(roll/2) * cos(pitch/2) * cos(yaw/2) + sin(roll/2) * sin(pitch/2) * sin(yaw/2)
+    qx = math.sin(roll/2) * math.cos(pitch/2) * math.cos(yaw/2) - math.cos(roll/2) * math.sin(pitch/2) * math.sin(yaw/2)
+    qy = math.cos(roll/2) * math.sin(pitch/2) * math.cos(yaw/2) + math.sin(roll/2) * math.cos(pitch/2) * math.sin(yaw/2)
+    qz = math.cos(roll/2) * math.cos(pitch/2) * math.sin(yaw/2) - math.sin(roll/2) * math.sin(pitch/2) * math.cos(yaw/2)
+    qw = math.cos(roll/2) * math.cos(pitch/2) * math.cos(yaw/2) + math.sin(roll/2) * math.sin(pitch/2) * math.sin(yaw/2)
     return Quaternion(x=qx, y=qy, z=qz, w=qw)
 
 class NONKDL_DKIN(Node):
-    def __init__(self, filename):
+    def __init__(self):
+        rclpy.init()
         super().__init__('NONKDL_DKIN')
+        filename = os.path.join(get_package_share_directory('lab3'), 'DH.yaml') # 'src/kobylecki_palczuk/lab3/urdf/DH.yaml'
+        # {'use_sim_time': use_sim_time, 'robot_description': Command(['xacro', ' ', os.path.join(get_package_share_directory('lab3'), xacro_file_name)])}
         self.transformations = []
-        self.positions = []
+        self.positions = [0.0, 0.0, 0.0]
         self.filename = filename
         self.stamped = PoseStamped()
         self.sub = self.create_subscription(JointState, 'joint_states', self.get_positions, 10)
         self.pub = self.create_publisher(PoseStamped, 'pose_stamped_NONKDL_DKIN', 10)
-        
+        self.publish_positions()
 
     def create_transformations(self):
         params = read_from_yaml(self.filename)
@@ -56,11 +59,6 @@ class NONKDL_DKIN(Node):
             # theta = params[element]['theta']
             theta = self.positions[i]
             i+=1
-
-            # to jest algorytm i nwm co to ani po co to
-            # trans = numpy.eye(4)
-            # trans[2][3] = 0.2 # o co tu chodzi wg???
-
             trans.append(self.transform(a, d, alpha, theta))
         self.transformations = trans
 
@@ -72,7 +70,7 @@ class NONKDL_DKIN(Node):
 
     def calculate(self):
         self.create_transformations()
-        matrix = self.transformations[len(self.transformations)]
+        matrix = self.transformations[len(self.transformations) - 1]
         for i in range(len(self.transformations)):
             j = len(self.transformations) - i
             if j >= 0:
@@ -139,9 +137,9 @@ class NONKDL_DKIN(Node):
         return numpy.matmul(alpha, theta) + matr
 
 def main():
-    wenzel = NONKDL_DKIN('kobylecki_palczuk/lab3/urdf/DH.yaml')
+    wenzel = NONKDL_DKIN()
     rclpy.spin(wenzel)
-    print('Hi from lab3.')
+    # print('Hi from lab3.')
 
 if __name__ == '__main__':
     main()
