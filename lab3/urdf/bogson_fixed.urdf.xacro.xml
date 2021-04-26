@@ -19,9 +19,9 @@
     <link name="link1">
         <visual>
             <geometry>
-                <box size="${DH['joint_state_publisher_gui']['ros__parameters']['link1']['a']} 1 1"/>
+                <box size="${DH['link1']['a']} 1 1"/>
             </geometry>
-            <origin rpy="0 0 0" xyz="${0.5*DH['joint_state_publisher_gui']['ros__parameters']['link1']['a']} 0 0"/>
+            <origin rpy="0 0 0" xyz="${0.5*DH['link1']['a']} 0 0"/>
             <material name="magenta">
                 <color rgba="1 0 1 0.5"/>
             </material>
@@ -31,15 +31,15 @@
     <joint name="base_to_link1" type="fixed">
         <parent link="base"/>
         <child link="link1"/>
-        <origin xyz="0 0 1" rpy="${(DH['joint_state_publisher_gui']['ros__parameters']['link1']['alpha']*pi)/3.14 } 0 ${(DH['joint_state_publisher_gui']['ros__parameters']['link1']['theta']*pi)/3.14 }"/>
+        <origin xyz="0 0 1" rpy="${(DH['link1']['alpha']*pi)/3.14 } 0 ${(DH['link1']['theta']*pi)/3.14 }"/>
     </joint>
 
     <link name="link2">
         <visual>
             <geometry>
-                <box size="${DH['joint_state_publisher_gui']['ros__parameters']['link2']['a']} 1 1"/>
+                <box size="${DH['link2']['a']} 1 1"/>
             </geometry>
-            <origin rpy="0 0 0" xyz="${0.5*DH['joint_state_publisher_gui']['ros__parameters']['link2']['a']} 0 0"/>
+            <origin rpy="0 0 0" xyz="${0.5*DH['link2']['a']} 0 0"/>
             <material name="magenta">
                 <color rgba="1 0 1 0.5"/>
             </material>
@@ -49,15 +49,15 @@
     <joint name="link1_to_link2" type="fixed">
         <parent link="link1"/>
         <child link="link2"/>
-        <origin xyz="${DH['joint_state_publisher_gui']['ros__parameters']['link1']['a']} ${DH['joint_state_publisher_gui']['ros__parameters']['link1']['d']*sin(DH['joint_state_publisher_gui']['ros__parameters']['link1']['alpha'])*(-1)} ${DH['joint_state_publisher_gui']['ros__parameters']['link1']['d']*cos(DH['joint_state_publisher_gui']['ros__parameters']['link1']['alpha'])}" rpy="${(DH['joint_state_publisher_gui']['ros__parameters']['link2']['alpha']*pi)/3.14 } 0 ${(DH['joint_state_publisher_gui']['ros__parameters']['link2']['theta']*pi)/3.14 }"/>
+        <origin xyz="${DH['link1']['a']} ${DH['link1']['d']*sin(DH['link1']['alpha'])*(-1)} ${DH['link1']['d']*cos(DH['link1']['alpha'])}" rpy="${(DH['link2']['alpha']*pi)/3.14 } 0 ${(DH['link2']['theta']*pi)/3.14 }"/>
     </joint>
 
     <link name="link3">
         <visual>
             <geometry>
-                    <box size="${DH['joint_state_publisher_gui']['ros__parameters']['link3']['a']} 1 1"/>
+                    <box size="${DH['link3']['a']} 1 1"/>
                 </geometry>
-                <origin rpy="0 0 0" xyz="${0.5*DH['joint_state_publisher_gui']['ros__parameters']['link3']['a']} 0 0"/>
+                <origin rpy="0 0 0" xyz="${0.5*DH['link3']['a']} 0 0"/>
             <material name="magenta">
                 <color rgba="1 0 1 0.5"/>
             </material>
@@ -67,7 +67,7 @@
     <joint name="link2_to_link3" type="fixed">
         <parent link="link2"/>
         <child link="link3"/>
-        <origin xyz="${DH['joint_state_publisher_gui']['ros__parameters']['link2']['a']} ${DH['joint_state_publisher_gui']['ros__parameters']['link2']['d']*sin(DH['joint_state_publisher_gui']['ros__parameters']['link2']['alpha'])*(-1)} ${DH['joint_state_publisher_gui']['ros__parameters']['link2']['d']*cos(DH['joint_state_publisher_gui']['ros__parameters']['link2']['alpha'])}" rpy="${(DH['joint_state_publisher_gui']['ros__parameters']['link3']['alpha']*pi)/3.14 } 0 ${(DH['joint_state_publisher_gui']['ros__parameters']['link3']['theta']*pi)/3.14 }"/>
+        <origin xyz="${DH['link2']['a']} ${DH['link2']['d']*sin(DH['link2']['alpha'])*(-1)} ${DH['link2']['d']*cos(DH['link2']['alpha'])}" rpy="${(DH['link3']['alpha']*pi)/3.14 } 0 ${(DH['link3']['theta']*pi)/3.14 }"/>
     </joint>
 
     <link name="narzedzie">
@@ -85,6 +85,6 @@
     <joint name="link3_to_narzedzie" type="fixed">
         <parent link="link3"/>
         <child link="narzedzie"/>
-        <origin xyz="${DH['joint_state_publisher_gui']['ros__parameters']['link3']['a']} ${DH['joint_state_publisher_gui']['ros__parameters']['link3']['d']*sin(DH['joint_state_publisher_gui']['ros__parameters']['link3']['alpha'])*(-1)} ${DH['joint_state_publisher_gui']['ros__parameters']['link3']['d']*cos(DH['joint_state_publisher_gui']['ros__parameters']['link3']['alpha'])}" rpy="0 0 0"/>
+        <origin xyz="${DH['link3']['a']} ${DH['link3']['d']*sin(DH['link3']['alpha'])*(-1)} ${DH['link3']['d']*cos(DH['link3']['alpha'])}" rpy="0 0 0"/>
     </joint>
 </robot>

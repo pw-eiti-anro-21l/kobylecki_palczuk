@@ -17,16 +17,6 @@ def read_from_yaml(filename):
         reader = yaml.load(file, Loader=yaml.FullLoader)
     return reader
 
-# chyba niepotrzebne? narazie nie używamy
-# def transformacja():
-#     yml = read_from_yaml('kobylecki_palczuk/lab2/urdf/rpy.yaml')
-
-#     for element in yml:
-#         a = yml[element]['a']
-#         alpha = yml[element]['alpha']
-#         theta = yml[element]['theta']
-#         x = x + a
-
 def euler_to_quaternion(roll, pitch, yaw):
     qx = math.sin(roll/2) * math.cos(pitch/2) * math.cos(yaw/2) - math.cos(roll/2) * math.sin(pitch/2) * math.sin(yaw/2)
     qy = math.cos(roll/2) * math.sin(pitch/2) * math.cos(yaw/2) + math.sin(roll/2) * math.cos(pitch/2) * math.sin(yaw/2)
@@ -69,11 +59,19 @@ class NONKDL_DKIN(Node):
 
     def calculate(self):
         self.create_transformations()
+        print("-----")
+        print(self.transformations)
+        print("----------")
         matrix = self.transformations[len(self.transformations) - 1]
-        for i in range(len(self.transformations)):
-            j = len(self.transformations) - i
-            if j >= 0:
-                matrix = numpy.matmul(self.transformations[j-1], matrix)
+        print("i = ", len(self.transformations)-1)
+        print(matrix)
+        # print("len = ", len(self.transformations))
+        for i in range(len(self.transformations)-2, -1, -1):
+            # j = len(self.transformations) - i
+            # if i > 0:
+            matrix = numpy.matmul(self.transformations[i], matrix)
+            print("i = ", i)
+            print(matrix)
         narzedzie = numpy.matmul(matrix, numpy.array([[0], [0], [1], [1]]))
         self.stamped.pose.position.x = float(narzedzie[0])
         self.stamped.pose.position.y = float(narzedzie[1])
@@ -92,7 +90,6 @@ class NONKDL_DKIN(Node):
         self.publish_positions()
 
     def makeTransMatrix(self, x, y, z):
-        # return numpy.array([[0, 0, 0, x], [0, 0, 0, y], [0, 0, 0, z], [0, 0, 0, 1]])
         matr = numpy.zeros((4, 4))
         matr[0][3] = x
         matr[1][3] = y
@@ -109,12 +106,10 @@ class NONKDL_DKIN(Node):
         return numpy.array([[math.cos(theta), -math.sin(theta), 0, 0], [math.sin(theta), math.cos(theta), 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
 
     def transform(self, a, d, alpha, theta):
-        # x = self.transformX(a)
-        # z = self.transformZ(d)
-        alpha = self.rotateX(alpha)
-        theta = self.rotateZ(theta)
-        matr = self.makeTransMatrix(a, 0, d)
-        return numpy.matmul(alpha, theta) + matr
+        alphaRot = self.rotateX(alpha)
+        thetaRot = self.rotateZ(theta)
+        transMatr = self.makeTransMatrix(a, 0, d)
+        return numpy.matmul(alphaRot, thetaRot) + transMatr
 
 def main():
     wenzel = NONKDL_DKIN()

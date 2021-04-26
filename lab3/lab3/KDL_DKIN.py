@@ -35,6 +35,7 @@ class KDL_DKIN(Node):
         self.stamped = PoseStamped()
         self.sub = self.create_subscription(JointState, 'joint_states', self.my_pykdl, 10)
         self.pub = self.create_publisher(PoseStamped, 'pose_stamped_KDL_DKIN', 10)
+        self.params = read_from_yaml(self.filename)
 
     def publish_positions(self):
         self.stamped.header.stamp = self.get_clock().now().to_msg()
@@ -42,18 +43,17 @@ class KDL_DKIN(Node):
         self.pub.publish(self.stamped)
 
     def my_pykdl(self, msg):
-        params = read_from_yaml(self.filename)
         gengis = Chain()
-        decha = [[0, 0, 0, 0],[0, 0, 0, 0], [0,0,0,0]]
-        #decha = [[3, 0, 0, 0],[3, 1.57075, 0, 0],[3, 0, 0, 0],[0, 0, 0, 0]]
-        for i, element in enumerate(params):
-            for j, el in enumerate(params[element]):
-                #if el == "d" or el == "theta":
-                decha[i][j] = params[element][el]
-                #else:
-                    #decha[i+1][j] = params[element][el]
-        print(decha)
-        #decha[][]=
+        decha = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+        # decha = [[3, 0, 0, 0],[3, 1.57075, 0, 0],[3, 0, 0, 0],[0, 0, 0, 0]]
+        for i, param in enumerate(self.params):
+            for j, element in enumerate(self.params[param]):
+                # if el == "d" or el == "theta":
+                decha[i][j] = self.params[param][element]
+                # else:
+                #     decha[i+1][j] = self.params[element][el]
+        # print(decha)
+        # decha.insert(0, [1, 0, 0, 0])
         fr = Frame()
         for i in range(len(decha)):
             if i != 1:
@@ -72,7 +72,7 @@ class KDL_DKIN(Node):
         quack = fr1.M.GetQuaternion()
         self.stamped.pose.position.x = float(xyz[0])
         self.stamped.pose.position.y = float(xyz[1])
-        self.stamped.pose.position.z = float(xyz[2])
+        self.stamped.pose.position.z = float(xyz[2] + 1)
         self.stamped.pose.orientation = Quaternion(x=float(quack[0]), y=float(quack[1]), z=float(quack[2]), w=float(quack[3]))
         self.publish_positions()
 

@@ -10,7 +10,7 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     # urdf_file_name = 'bogson.urdf.xml'
     rviz2_file_name = 'bogson.rviz'
-    # xacro_file_name = 'bogson_fixed.urdf.xacro.xml'
+    xacro_file_name = 'bogson_fixed.urdf.xacro.xml'
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -23,5 +23,11 @@ def generate_launch_description():
             name='bogson_rviz2',
             output='screen',
             parameters=[{'use_sim_time': use_sim_time,}],
-            arguments=['-d', os.path.join(get_package_share_directory('lab3'), rviz2_file_name)])
+            arguments=['-d', os.path.join(get_package_share_directory('lab3'), rviz2_file_name)]),
+        Node(
+            package='joint_state_publisher_gui',
+            executable='joint_state_publisher_gui',
+            name='joint_state_publisher_gui',
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time, 'robot_description': Command(['xacro', ' ', os.path.join(get_package_share_directory('lab3'), xacro_file_name)])}])
     ])
