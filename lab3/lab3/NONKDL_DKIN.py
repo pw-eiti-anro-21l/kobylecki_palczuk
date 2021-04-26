@@ -28,26 +28,25 @@ class NONKDL_DKIN(Node):
     def __init__(self):
         rclpy.init()
         super().__init__('NONKDL_DKIN')
-        filename = os.path.join(get_package_share_directory('lab3'), 'DH.yaml') # 'src/kobylecki_palczuk/lab3/urdf/DH.yaml'
-        # {'use_sim_time': use_sim_time, 'robot_description': Command(['xacro', ' ', os.path.join(get_package_share_directory('lab3'), xacro_file_name)])}
+        filename = os.path.join(get_package_share_directory('lab3'), 'DH1.yaml') # 'src/kobylecki_palczuk/lab3/urdf/DH.yaml'
         self.transformations = []
         self.positions = [0.0, 0.0, 0.0]
         self.filename = filename
         self.stamped = PoseStamped()
+        self.params = read_from_yaml(self.filename)
         self.sub = self.create_subscription(JointState, 'joint_states', self.get_positions, 10)
         self.pub = self.create_publisher(PoseStamped, '/pose_stamped_NONKDL_DKIN', 10)
 
     def create_transformations(self):
-        params = read_from_yaml(self.filename)
         trans = []
-        i=0
-        for element in params:
-            a = params[element]['a']
-            d = params[element]['d']
-            alpha = params[element]['alpha']
-            # theta = params[element]['theta']
-            theta = self.positions[i]
-            i+=1
+        for i, element in enumerate(self.params):
+            a = self.params[element]['a']
+            d = self.params[element]['d']
+            alpha = self.params[element]['alpha']
+            if i < 3:
+                theta = self.positions[i]
+            else:
+                theta=0
             trans.append(self.transform(a, d, alpha, theta))
         self.transformations = trans
 
@@ -59,23 +58,13 @@ class NONKDL_DKIN(Node):
 
     def calculate(self):
         self.create_transformations()
-        print("-----")
-        print(self.transformations)
-        print("----------")
-        matrix = self.transformations[len(self.transformations) - 1]
-        print("i = ", len(self.transformations)-1)
-        print(matrix)
-        # print("len = ", len(self.transformations))
-        for i in range(len(self.transformations)-2, -1, -1):
-            # j = len(self.transformations) - i
-            # if i > 0:
+        matrix = numpy.eye(4)
+        for i in range(len(self.transformations)-1, -1, -1):
             matrix = numpy.matmul(self.transformations[i], matrix)
-            print("i = ", i)
-            print(matrix)
-        narzedzie = numpy.matmul(matrix, numpy.array([[0], [0], [1], [1]]))
+        narzedzie = numpy.matmul(matrix, numpy.array([[0.0], [0.0], [0.0], [1.0]]))
         self.stamped.pose.position.x = float(narzedzie[0])
         self.stamped.pose.position.y = float(narzedzie[1])
-        self.stamped.pose.position.z = float(narzedzie[2])
+        self.stamped.pose.position.z = float(narzedzie[2])+1
         (r, p, y) = self.rotation_TORPY(matrix)
         self.stamped.pose.orientation = euler_to_quaternion(r, p, y)
 
