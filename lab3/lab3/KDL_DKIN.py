@@ -37,7 +37,6 @@ class KDL_DKIN(Node):
         self.pub = self.create_publisher(PoseStamped, 'pose_stamped_KDL_DKIN', 10)
 
     def publish_positions(self):
-        self.calculate()
         self.stamped.header.stamp = self.get_clock().now().to_msg()
         self.stamped.header.frame_id = 'base'
         self.pub.publish(self.stamped)
@@ -45,9 +44,22 @@ class KDL_DKIN(Node):
     def my_pykdl(self, msg):
         params = read_from_yaml(self.filename)
         gengis = Chain()
+        decha = [[0, 0, 0, 0],[0, 0, 0, 0], [0,0,0,0]]
+        #decha = [[3, 0, 0, 0],[3, 1.57075, 0, 0],[3, 0, 0, 0],[0, 0, 0, 0]]
+        for i, element in enumerate(params):
+            for j, el in enumerate(params[element]):
+                #if el == "d" or el == "theta":
+                decha[i][j] = params[element][el]
+                #else:
+                    #decha[i+1][j] = params[element][el]
+        print(decha)
+        #decha[][]=
         fr = Frame()
-        for element in params:
-            gengis.addSegment(Joint(Joint.RotZ), fr.DH(element['a'], element['alpha'], element['d'], element['theta'])) #do zmiany wartosci w wektorze
+        for i in range(len(decha)):
+            if i != 1:
+                gengis.addSegment(Segment(Joint(Joint.RotZ), fr.DH(decha[i][0], decha[i][2], decha[i][1], decha[i][3])))
+            else:
+                gengis.addSegment(Segment(Joint(Joint.RotY), fr.DH(decha[i][0], decha[i][2], decha[i][1], decha[i][3])))
         jnts = JntArray(3)
         jnts[0] = msg.position[0]
         jnts[1] = msg.position[1]
