@@ -34,7 +34,6 @@ class KDL_DKIN(Node):
         self.filename = filename
         self.stamped = PoseStamped()
         self.sub = self.create_subscription(JointState, 'joint_states', self.my_pykdl, 10)
-        # qous = QoSProfile(depth = 10)
         self.pub = self.create_publisher(PoseStamped, 'pose_stamped_KDL_DKIN', 10)
 
     def publish_positions(self):

@@ -64,7 +64,7 @@ class NONKDL_DKIN(Node):
     def publish_positions(self):
         self.calculate()
         self.stamped.header.stamp = self.get_clock().now().to_msg()
-        self.stamped.header.frame_id = 'odom'
+        self.stamped.header.frame_id = 'base'
         self.pub.publish(self.stamped)
 
     def calculate(self):
@@ -91,10 +91,6 @@ class NONKDL_DKIN(Node):
         self.positions = msg.position
         self.publish_positions()
 
-    # zły pomysł chyba
-    # def makeVector(self, x, y, z):
-    #     return numpy.array([[x], [y], [z], [1]])
-
     def makeTransMatrix(self, x, y, z):
         # return numpy.array([[0, 0, 0, x], [0, 0, 0, y], [0, 0, 0, z], [0, 0, 0, 1]])
         matr = numpy.zeros((4, 4))
@@ -102,22 +98,6 @@ class NONKDL_DKIN(Node):
         matr[1][3] = y
         matr[2][3] = z
         return matr
-
-    # te też chyba są złym pomysłem i niepotrzebne
-    # def transformX(self, a):
-    #     out = numpy.eye(4)
-    #     out[0][3] = a
-    #     return out
-
-    # def transformY(self, y):
-    #     out = numpy.eye(4)
-    #     out[1][3] = y
-    #     return out
-
-    # def transformZ(self, d):
-    #     out = numpy.eye(4)
-    #     out[2][3] = d
-    #     return out
 
     def rotateX(self, alpha):
         return numpy.array([[1, 0, 0, 0], [0, math.cos(alpha), -math.sin(alpha), 0], [0, math.sin(alpha), math.cos(alpha), 0], [0, 0, 0, 1]])
