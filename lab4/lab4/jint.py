@@ -15,6 +15,10 @@ from tf2_ros import TransformBroadcaster, TransformStamped
 from rclpy.clock import ROSClock
 from lab4_srv.srv import JintControlSrv
 
+"""
+Ten typ działa tak, że od aktualznej pozycji do zadanej z serwisu ma się przemieścić
+w czasie zadanym w serwisie jako time. W tym serwisie też jest podany typ interpolacji
+"""
 
 class Jint(Node):
 	def __init__(self):
@@ -45,42 +49,74 @@ class Jint(Node):
 		self.p3_2 = 0.  
 
 		self.meth = ""
+		self.time = 0
+		self.targ_time = 0
+		self.success = False
+
+		# okres co ile liczona jest nowa pozycja w interpolacji
+		self.period = 0.05
 
 		self.odom_trans = TransformStamped()
 		self.odom_trans.header.frame_id = 'base'
 		self.joint_state = JointState()
 
+		self.timer = self.create_timer(self.period, self.update_state)
+
 		pub = threading.Thread(target=self.publish_state)
 		pub.start()
 
-	def interpol(self, start, end, tstart, tend, tserv, meth): # interpolacja liniowa question mark?
+	def interpol_callback(self, req, out): # tu bedzie do callbacku
+		if self.success:
+			# rozne wyjatki
+			if self.p1_2 == req.p1 and self.p2_2 == req.p2 and self.p3_2 == req.p3:
+				out.operation = "Juz to zrobilem byczq!"
+			elif req.meth != "linear" and req.meth != "spline":
+				out.operation = "Nie znam takiej interpolacji byczq!"
+			elif req.time <= 0:
+				out.operation = "Potrzebuje wiecej czasu byczq!"
+			else:
+				self.time = 0.
+				self.success = False
+
+				self.p1_0 = self.p1_2
+				self.p2_0 = self.p2_2
+				self.p3_0 = self.p3_2
+
+				self.p1_2 = req.p1
+				self.p2_2 = req.p2
+				self.p3_2 = req.p3
+
+				self.targ_time = req.time
+
+				self.meth = req.meth
+
+				# thread = threading.Thread(target=self.update_state)
+
+				out.operation = "Sukces byczq!"
+		else:
+			out.operation = "Jeszcze sie ruszam, chilluj wora!"
+		return out
+
+	def update_state(self):
+		# while True:
+		if self.time < self.targ_time:
+			self.time = self.time + self.period
+		# if self.p1_1 != self.p1_2:
+			self.p1_1 = self.interpol(self.p1_0, self.p1_2, 0, self.targ_time, self.time, self.meth)
+		# if self.p2_1 != self.p2_2:
+			self.p2_1 = self.interpol(self.p2_0, self.p2_2, 0, self.targ_time, self.time, self.meth)
+		# if self.p3_1 != self.p3_2:
+			self.p3_1 = self.interpol(self.p3_0, self.p3_2, 0, self.targ_time, self.time, self.meth)
+		else:
+			self.success = True
+
+	def interpol(self, val_start, val_end, t_start, t_end, t_serv, meth): # interpolacja liniowa question mark?
 		if meth == "linear":
-			return ((end-start)/(tend-tstart))*(tserv-tstart)+start
+			return ((val_end-val_start)/(t_end-t_start))*(t_serv-t_start)+val_start
 		elif meth == "spline":
 			pass
 		else:
 			return 0
-
-	def interpol_callback(self, req, out): # tu bedzie do callbacku
-		self.time = 0.
-		self.success = False
-
-		self.p1_2 = req.p1_2
-		self.p2_2 = req.p2_2
-		self.p3_2 = req.p3_2
-
-		self.p1_0 = self.p1_1
-		self.p2_0 = self.p2_1
-		self.p3_0 = self.p3_1
-		self.targ_time = req.time
-
-		self.meth = req.meth
-
-		thread = threading.Thread(target=self.update_state)
-
-		out.operation = "Success!"
-
-		return out
 
 	def publish_state(self):
 		while True:
@@ -99,20 +135,10 @@ class Jint(Node):
 				self.broadcaster.sendTransform(self.odom_trans)
 
 				# This will adjust as needed per iteration
-				time.sleep(0.05)
+				time.sleep(self.period)
 
 			except KeyboardInterrupt:
 				pass
-
-	def update_state(self):
-		while True:
-			if self.p1_1 != self.p1_2:
-				self.p1_1 = interpol(self.p1_0, p1_2, 0, self.targ_time, self.time, self.meth)
-			if self.p2_1 != self.p2_2:
-				self.p2_1 = interpol(self.p2_0, p2_2, 0, self.targ_time, self.time, self.meth)
-			if self.p3_1 != self.p3_2:
-				self.p3_1 = interpol(self.p3_0, p3_2, 0, self.targ_time, self.time, self.meth)
-
 
 def main():
 	wenzel = Jint()
