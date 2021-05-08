@@ -1,0 +1,10 @@
+string interpol
+
+float64 time 0.0
+float64 p1_1 0.0
+float64 p2_1 0.0
+float64 p3_1 0.0
+
+---
+
+string operation "success"

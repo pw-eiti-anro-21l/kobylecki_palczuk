@@ -8,6 +8,9 @@ from launch_ros.actions import Node
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     xacro_file_name = 'bogson_move.urdf.xacro.xml'
+    p1_1 = 0.
+    p2_1 = 0.
+    p3_1 = 0.
     return LaunchDescription([
         DeclareLaunchArgument(
             'use_sim_time',
@@ -17,7 +20,8 @@ def generate_launch_description():
             package='lab4',
             executable='jint',
             name='jint',
-            output='screen'),
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time, 'p1_1': p1_1, 'p2_1': p2_1, 'p3_1': p3_1}]),
         Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',

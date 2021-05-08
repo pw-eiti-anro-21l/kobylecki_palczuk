@@ -19,33 +19,36 @@ class Jint(Node):
 		rclpy.init()
 		super().__init__('jint')
 		self.joint_pub = self.create_publisher(JointState, 'joint_states')
-		self.jint_control_srv = self.create_service(JintControlSrv, "interpolation_parameters", self.interpol_callback)
+		self.JintControlSrv = self.create_service(JintControlSrv, "interpolation_parameters", self.interpol_callback)
+		self.broadcaster = self.TransformBroadcaster(self)
 		self.nodeName = self.get_name()
-        self.get_logger().info("{0} initiated".format(self.nodeName))
+		self.get_logger().info("{0} initiated. Beep boop beep.".format(self.nodeName))
 
-        self.declare_parameter('p1_1', 0.)
-        self.declare_parameter('p2_1', 0.)
-        self.declare_parameter('p3_1', 0.)
-        self.p1_1 = self.get_parameter('p1_1').get_parameter_value().double_value
-        self.p2_1 = self.get_parameter('p2_1').get_parameter_value().double_value
-        self.p3_1 = self.get_parameter('p3_1').get_parameter_value().double_value
+		# pX_Y - pozycja jointa nr X w "chwili" Y
 
-        self.p1_0 = self.p1_1
-        self.p2_0 = self.p2_1
-        self.p3_0 = self.p3_1
+		self.declare_parameter('p1_1', 0.)
+		self.declare_parameter('p2_1', 0.)
+		self.declare_parameter('p3_1', 0.)
+		self.p1_1 = self.get_parameter('p1_1').get_parameter_value().double_value
+		self.p2_1 = self.get_parameter('p2_1').get_parameter_value().double_value
+		self.p3_1 = self.get_parameter('p3_1').get_parameter_value().double_value
 
-        self.p1_2 = 0.
-        self.p2_2 = 0.
-        self.p3_2 = 0.
+		self.p1_0 = self.p1_1
+		self.p2_0 = self.p2_1
+		self.p3_0 = self.p3_1
 
-        self.meth = ""
+		self.p1_2 = 0.
+		self.p2_2 = 0.
+		self.p3_2 = 0.  
 
-        self.odom_trans = TransformStamped()
-        self.odom_trans.header.frame_id = 'base'
-        self.joint_state = JointState()
+		self.meth = ""
 
-        pub = threading.Thread(target=self.publish_state)
-        pub.start()
+		self.odom_trans = TransformStamped()
+		self.odom_trans.header.frame_id = 'base'
+		self.joint_state = JointState()
+
+		pub = threading.Thread(target=self.publish_state)
+		pub.start()
 
 	def interpol(self, start, end, tstart, tend, tserv, meth): # interpolacja liniowa question mark?
 		if meth == "linear":
@@ -78,25 +81,25 @@ class Jint(Node):
 
 	def publish_state(self):
 		while True:
-	        try:
-	            # update joint_state
-	            now = self.get_clock().now()
-	            self.joint_state.header.stamp = now.to_msg()
-	            self.joint_state.name = ["base_to_link1", "link1_to_link2", "link2_to_link3"]
-	            self.joint_state.position = [self.p1_1, self.p1_2, self.x3]
+			try:
+				# update joint_state
+				now = self.get_clock().now()
+				self.joint_state.header.stamp = now.to_msg()
+				self.joint_state.name = ["base_to_link1", "link1_to_link2", "link2_to_link3"]
+				self.joint_state.position = [self.p1_1, self.p1_2, self.x3]
 
-	            # update transform
-	            self.odom_trans.header.stamp = now.to_msg()
+				# update transform
+				self.odom_trans.header.stamp = now.to_msg()
 
-	            # send the joint state and transform
-	            self.joint_pub.publish(self.joint_state)
-	            self.broadcaster.sendTransform(self.odom_trans)
+				# send the joint state and transform
+				self.joint_pub.publish(self.joint_state)
+				self.broadcaster.sendTransform(self.odom_trans)
 
-	            # This will adjust as needed per iteration
-	            self.loop_rate.sleep()
+				# This will adjust as needed per iteration
+				self.loop_rate.sleep()
 
-	        except KeyboardInterrupt:
-	            pass
+			except KeyboardInterrupt:
+				pass
 
 	def update_state(self):
 		while True:
@@ -109,9 +112,9 @@ class Jint(Node):
 
 
 def main():
-    wenzel = Jint()
-    rclpy.spin(wenzel)
+	wenzel = Jint()
+	rclpy.spin(wenzel)
 
 
 if __name__ == '__main__':
-    main()
+	main()
