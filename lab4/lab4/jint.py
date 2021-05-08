@@ -3,6 +3,8 @@ import os
 import rclpy
 import numpy
 import math
+import threading
+import time
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from ament_index_python.packages import get_package_share_directory
@@ -18,9 +20,10 @@ class Jint(Node):
 	def __init__(self):
 		rclpy.init()
 		super().__init__('jint')
-		self.joint_pub = self.create_publisher(JointState, 'joint_states')
+		qos_profile = QoSProfile(depth=10)
+		self.joint_pub = self.create_publisher(JointState, 'joint_states', qos_profile)
 		self.JintControlSrv = self.create_service(JintControlSrv, "interpolation_parameters", self.interpol_callback)
-		self.broadcaster = self.TransformBroadcaster(self)
+		self.broadcaster = TransformBroadcaster(self, qos=qos_profile)
 		self.nodeName = self.get_name()
 		self.get_logger().info("{0} initiated. Beep boop beep.".format(self.nodeName))
 
@@ -86,7 +89,7 @@ class Jint(Node):
 				now = self.get_clock().now()
 				self.joint_state.header.stamp = now.to_msg()
 				self.joint_state.name = ["base_to_link1", "link1_to_link2", "link2_to_link3"]
-				self.joint_state.position = [self.p1_1, self.p1_2, self.x3]
+				self.joint_state.position = [self.p1_1, self.p2_1, self.p3_1]
 
 				# update transform
 				self.odom_trans.header.stamp = now.to_msg()
@@ -96,7 +99,7 @@ class Jint(Node):
 				self.broadcaster.sendTransform(self.odom_trans)
 
 				# This will adjust as needed per iteration
-				self.loop_rate.sleep()
+				time.sleep(0.05)
 
 			except KeyboardInterrupt:
 				pass
