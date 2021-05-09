@@ -25,7 +25,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'jint = lab4.jint:main'
+            'jint = lab4.jint:main',
+            'oint = lab4.oint:main'
         ],
     },
 )

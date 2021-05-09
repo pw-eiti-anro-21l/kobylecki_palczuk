@@ -70,6 +70,7 @@ class Jint(Node):
 
 	def interpol_callback(self, req, out): # tu bedzie do callbacku
 		if self.success:
+			granica = math.pi / 2
 			# rozne wyjatki
 			if self.p1_2 == req.p1 and self.p2_2 == req.p2 and self.p3_2 == req.p3:
 				out.operation = "Juz to zrobilem byczq!"
@@ -77,6 +78,8 @@ class Jint(Node):
 				out.operation = "Nie znam takiej interpolacji byczq!"
 			elif req.time <= 0:
 				out.operation = "Potrzebuje wiecej czasu byczq!"
+			elif abs(req.p1) > granica or abs(req.p2) > granica or abs(req.p3) > granica:
+				out.operation = "To poza moimi mozliwosciami byczq!"
 			else:
 				self.time = 0.
 				self.success = False
