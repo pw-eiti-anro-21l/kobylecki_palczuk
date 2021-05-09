@@ -56,7 +56,6 @@ class Oint(Node):
 
         self.odom_trans = TransformStamped()
         self.odom_trans.header.frame_id = 'base'
-        self.joint_state = JointState()
         self.pose_stamped = PoseStamped()
 
         self.timer = self.create_timer(self.period, self.update_state)
