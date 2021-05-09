@@ -18,9 +18,9 @@ class Oint(Node):
         rclpy.init()
         super().__init__('oint')
         qos_profile = QoSProfile(depth=10)
-        self.pose_pub = self.create_publisher(PoseStamped, 'pose_2137', qos_profile)
+        self.pose_pub = self.create_publisher(PoseStamped, 'oint_pose_2137', qos_profile)
         self.OintControlSrv = self.create_service(OintControlSrv, "oint_control_srv", self.interpol_callback)
-        self.broadcaster = TransformBroadcaster(self, qos=qos_profile) # potrzeba?
+        # self.broadcaster = TransformBroadcaster(self, qos=qos_profile) # potrzeba?
         self.nodeName = self.get_name()
         self.get_logger().info("{0} initiated. Beep boop beep.".format(self.nodeName))
         self.declare_params()
@@ -54,8 +54,8 @@ class Oint(Node):
         # okres co ile liczona jest nowa pozycja w interpolacji
         self.period = 0.05
 
-        self.odom_trans = TransformStamped()
-        self.odom_trans.header.frame_id = 'base'
+        # self.odom_trans = TransformStamped()
+        # self.odom_trans.header.frame_id = 'base'
         self.pose_stamped = PoseStamped()
 
         self.timer = self.create_timer(self.period, self.update_state)
@@ -160,13 +160,14 @@ class Oint(Node):
                 # update joint_state
                 now = self.get_clock().now()
                 self.pose_stamped.header.stamp = now.to_msg()
+                self.pose_stamped.header.frame_id = 'base'
                 # self.pose_stamped.name = ["base_to_link1", "link1_to_link2", "link2_to_link3"]
-                self.pose_stamped.pose.position.x = self.p1_1
-                self.pose_stamped.pose.position.y = self.p2_1
-                self.pose_stamped.pose.position.z = self.p3_1
+                self.pose_stamped.pose.position.x = float(self.p1_1)
+                self.pose_stamped.pose.position.y = float(self.p2_1)
+                self.pose_stamped.pose.position.z = float(self.p3_1)
 
                 # update transform
-                self.odom_trans.header.stamp = now.to_msg()
+                # self.odom_trans.header.stamp = now.to_msg()
 
                 # send the joint state and transform
                 self.pose_pub.publish(self.pose_stamped)
