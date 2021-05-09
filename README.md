@@ -6,3 +6,5 @@ Jest to węzeł sterujący wizualizacją "turtlesim turtlesim_node" przy pomocy 
 Nieruchomy i ruchomy model robota w postaci pojedynczego ramienia, odpowiednich plików uruchomieniowych oraz węzłów sterujących robotem.
 ## LAB 3
 Węzły rozwiązujące prostą kinematykę manipulatora metoda analityczną. 
+## LAB 4
+Węzły interpolujące trajektorię ruchu w przestrzeni konfiguracyjnej i operacyjnej (Kartezjańskiej). Obsługują one odpowienie serwisy. 

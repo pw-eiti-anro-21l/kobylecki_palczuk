@@ -34,13 +34,6 @@ class Jint(Node):
 
 	def declare_params(self):
 		# pX_Y - pozycja jointa nr X w "chwili" Y
-
-		# self.declare_parameter('p1_1', 0.)
-		# self.declare_parameter('p2_1', 0.)
-		# self.declare_parameter('p3_1', 0.)
-		# self.p1_1 = self.get_parameter('p1_1').get_parameter_value().double_value
-		# self.p2_1 = self.get_parameter('p2_1').get_parameter_value().double_value
-		# self.p3_1 = self.get_parameter('p3_1').get_parameter_value().double_value
 		self.p1_1 = 0.
 		self.p2_1 = 0.
 		self.p3_1 = 0.
@@ -70,7 +63,7 @@ class Jint(Node):
 		pub = threading.Thread(target=self.publish_state)
 		pub.start()
 
-	def interpol_callback(self, req, out): # tu bedzie do callbacku
+	def interpol_callback(self, req, out):
 		if self.success:
 			granica = math.pi / 2
 			# rozne wyjatki
@@ -98,66 +91,32 @@ class Jint(Node):
 
 				self.meth = req.meth
 
-				# thread = threading.Thread(target=self.update_state)
-
 				out.operation = "Sukces byczq!"
 		else:
 			out.operation = "Jeszcze sie ruszam, chilluj wora!"
 		return out
 
 	def update_state(self):
-		# while True:
 		if self.time < self.targ_time:
+			# time increment
 			self.time = self.time + self.period
-		# if self.p1_1 != self.p1_2:
+			# position
 			self.p1_1 = self.interpol(self.p1_0, self.p1_2, 0, self.targ_time, self.time, self.meth)
-		# if self.p2_1 != self.p2_2:
 			self.p2_1 = self.interpol(self.p2_0, self.p2_2, 0, self.targ_time, self.time, self.meth)
-		# if self.p3_1 != self.p3_2:
 			self.p3_1 = self.interpol(self.p3_0, self.p3_2, 0, self.targ_time, self.time, self.meth)
 		else:
 			self.success = True
 
-	def interpol(self, poz_start, poz_end, t_start, t_end, t_now, meth): # interpolacja liniowa question mark?
+	def interpol(self, poz_start, poz_end, t_start, t_end, t_now, meth):
 		if meth == "linear":
 			return ((poz_end-poz_start)/(t_end-t_start))*(t_now-t_start)+poz_start
-
 		elif meth == "spline":
-			# t_bufor = 1
-			# poz_bufor = math.pi/4
-			# is_max_speed = True
-			# # dopasowanie jak ma nie osiagac pelnej predkosci, bo za malo czasu albo miejsca
-			# if t_end-t_start < 2*t_bufor or poz_end-poz_start < 2* poz_bufor:
-			# 	t_bufor = (t_end-t_start)/2
-			# 	poz_bufor = (poz_end-poz_start)/2
-			# 	is_max_speed = False
-
-			# if is_max_speed:
-			# 	der = (poz_end-poz_start-2*poz_bufor)/(t_end-t_start-2*t_bufor)
-			# else:
-			# 	der = 1
-
-			# # rozpedzanie
-			# if t_now <= t_bufor:
-			# 	pass
-			# # hamowanie
-			# elif t_now >= t_end-t_bufor:
-			# 	pass
-			# # pelna predkosc (zachodzi tylko przypadku gdy max_speed nie jest osiagane)
-			# else:
-			# 	poz_start = poz_start + poz_bufor
-			# 	poz_end = poz_end - poz_bufor
-			# 	t_start = t_start + t_bufor
-			# 	t_end = t_end - t_bufor
-			# 	# t_now = t_now + t_bufor
-			# 	return ((poz_end-poz_start)/(t_end-t_start))*(t_now-t_start)+poz_start
 			k1=0
 			k2=0
 			a = k1*(t_end-t_start) - (poz_end-poz_start)
 			b = -k2*(t_end-t_start) + (poz_end-poz_start)
 			t = (t_now-t_start)/(t_end-t_start)
 			return (1-t)*poz_start + t*poz_end + t*(1-t)*((1-t)*a + t*b)
-
 		else:
 			return 0
 
@@ -177,7 +136,6 @@ class Jint(Node):
 				self.joint_pub.publish(self.joint_state)
 				self.broadcaster.sendTransform(self.odom_trans)
 
-				# This will adjust as needed per iteration
 				time.sleep(self.period)
 
 			except KeyboardInterrupt:
