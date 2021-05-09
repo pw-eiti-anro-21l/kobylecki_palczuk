@@ -33,12 +33,15 @@ class Jint(Node):
 
 		# pX_Y - pozycja jointa nr X w "chwili" Y
 
-		self.declare_parameter('p1_1', 0.)
-		self.declare_parameter('p2_1', 0.)
-		self.declare_parameter('p3_1', 0.)
-		self.p1_1 = self.get_parameter('p1_1').get_parameter_value().double_value
-		self.p2_1 = self.get_parameter('p2_1').get_parameter_value().double_value
-		self.p3_1 = self.get_parameter('p3_1').get_parameter_value().double_value
+		# self.declare_parameter('p1_1', 0.)
+		# self.declare_parameter('p2_1', 0.)
+		# self.declare_parameter('p3_1', 0.)
+		# self.p1_1 = self.get_parameter('p1_1').get_parameter_value().double_value
+		# self.p2_1 = self.get_parameter('p2_1').get_parameter_value().double_value
+		# self.p3_1 = self.get_parameter('p3_1').get_parameter_value().double_value
+		self.p1_1 = 0.
+		self.p2_1 = 0.
+		self.p3_1 = 0.
 
 		self.p1_0 = self.p1_1
 		self.p2_0 = self.p2_1
@@ -110,11 +113,46 @@ class Jint(Node):
 		else:
 			self.success = True
 
-	def interpol(self, val_start, val_end, t_start, t_end, t_serv, meth): # interpolacja liniowa question mark?
+	def interpol(self, poz_start, poz_end, t_start, t_end, t_now, meth): # interpolacja liniowa question mark?
 		if meth == "linear":
-			return ((val_end-val_start)/(t_end-t_start))*(t_serv-t_start)+val_start
+			return ((poz_end-poz_start)/(t_end-t_start))*(t_now-t_start)+poz_start
+
 		elif meth == "spline":
-			pass
+			# t_bufor = 1
+			# poz_bufor = math.pi/4
+			# is_max_speed = True
+			# # dopasowanie jak ma nie osiagac pelnej predkosci, bo za malo czasu albo miejsca
+			# if t_end-t_start < 2*t_bufor or poz_end-poz_start < 2* poz_bufor:
+			# 	t_bufor = (t_end-t_start)/2
+			# 	poz_bufor = (poz_end-poz_start)/2
+			# 	is_max_speed = False
+
+			# if is_max_speed:
+			# 	der = (poz_end-poz_start-2*poz_bufor)/(t_end-t_start-2*t_bufor)
+			# else:
+			# 	der = 1
+
+			# # rozpedzanie
+			# if t_now <= t_bufor:
+			# 	pass
+			# # hamowanie
+			# elif t_now >= t_end-t_bufor:
+			# 	pass
+			# # pelna predkosc (zachodzi tylko przypadku gdy max_speed nie jest osiagane)
+			# else:
+			# 	poz_start = poz_start + poz_bufor
+			# 	poz_end = poz_end - poz_bufor
+			# 	t_start = t_start + t_bufor
+			# 	t_end = t_end - t_bufor
+			# 	# t_now = t_now + t_bufor
+			# 	return ((poz_end-poz_start)/(t_end-t_start))*(t_now-t_start)+poz_start
+			k1=0
+			k2=0
+			a = k1*(t_end-t_start) - (poz_end-poz_start)
+			b = -k2*(t_end-t_start) + (poz_end-poz_start)
+			t = (t_now-t_start)/(t_end-t_start)
+			return (1-t)*poz_start + t*poz_end + t*(1-t)*((1-t)*a + t*b)
+
 		else:
 			return 0
 
