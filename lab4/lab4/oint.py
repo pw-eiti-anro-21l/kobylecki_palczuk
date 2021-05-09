@@ -19,7 +19,7 @@ class Oint(Node):
         super().__init__('oint')
         qos_profile = QoSProfile(depth=10)
         self.pose_pub = self.create_publisher(PoseStamped, 'pose_2137', qos_profile)
-        self.OintControlSrv = self.create_service(OintControlSrv, "interpolation_parameters2", self.interpol_callback)
+        self.OintControlSrv = self.create_service(OintControlSrv, "oint_control_srv", self.interpol_callback)
         self.broadcaster = TransformBroadcaster(self, qos=qos_profile) # potrzeba?
         self.nodeName = self.get_name()
         self.get_logger().info("{0} initiated. Beep boop beep.".format(self.nodeName))

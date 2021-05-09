@@ -26,7 +26,7 @@ class Jint(Node):
 		super().__init__('jint')
 		qos_profile = QoSProfile(depth=10)
 		self.joint_pub = self.create_publisher(JointState, 'joint_states', qos_profile)
-		self.JintControlSrv = self.create_service(JintControlSrv, "interpolation_parameters", self.interpol_callback)
+		self.JintControlSrv = self.create_service(JintControlSrv, "jint_control_srv", self.interpol_callback)
 		self.broadcaster = TransformBroadcaster(self, qos=qos_profile)
 		self.nodeName = self.get_name()
 		self.get_logger().info("{0} initiated. Beep boop beep.".format(self.nodeName))
