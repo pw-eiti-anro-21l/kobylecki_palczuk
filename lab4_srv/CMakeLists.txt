@@ -20,6 +20,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/JintControlSrv.srv"
+  "srv/OintControlSrv.srv"
 )
 # uncomment the following section in order to fill in
 # further dependencies manually.

@@ -21,11 +21,11 @@ def generate_launch_description():
             executable='oint',
             name='oint',
             output='screen',
-            parameters=[{'use_sim_time': use_sim_time, 'p1_1': p1_1, 'p2_1': p2_1, 'p3_1': p3_1}]),
-        Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            name='robot_state_publisher',
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time, 'robot_description': Command(['xacro', ' ', os.path.join(get_package_share_directory('lab4'), xacro_file_name)])}])
+            parameters=[{'use_sim_time': use_sim_time, 'p1_1': p1_1, 'p2_1': p2_1, 'p3_1': p3_1}])
+        # Node(
+        #     package='robot_state_publisher',
+        #     executable='robot_state_publisher',
+        #     name='robot_state_publisher',
+        #     output='screen',
+        #     parameters=[{'use_sim_time': use_sim_time, 'robot_description': Command(['xacro', ' ', os.path.join(get_package_share_directory('lab4'), xacro_file_name)])}])
     ])

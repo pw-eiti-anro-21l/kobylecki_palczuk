@@ -30,7 +30,9 @@ class Jint(Node):
 		self.broadcaster = TransformBroadcaster(self, qos=qos_profile)
 		self.nodeName = self.get_name()
 		self.get_logger().info("{0} initiated. Beep boop beep.".format(self.nodeName))
+		self.declare_params()
 
+	def declare_params(self):
 		# pX_Y - pozycja jointa nr X w "chwili" Y
 
 		# self.declare_parameter('p1_1', 0.)
@@ -43,9 +45,9 @@ class Jint(Node):
 		self.p2_1 = 0.
 		self.p3_1 = 0.
 
-		self.p1_0 = self.p1_1
-		self.p2_0 = self.p2_1
-		self.p3_0 = self.p3_1
+		self.p1_0 = 0.
+		self.p2_0 = 0.
+		self.p3_0 = 0.
 
 		self.p1_2 = 0.
 		self.p2_2 = 0.
@@ -62,6 +64,7 @@ class Jint(Node):
 		self.odom_trans = TransformStamped()
 		self.odom_trans.header.frame_id = 'base'
 		self.joint_state = JointState()
+		self.pose_stamped = PoseStamped()
 
 		self.timer = self.create_timer(self.period, self.update_state)
 
