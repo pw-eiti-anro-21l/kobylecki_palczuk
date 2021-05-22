@@ -2,8 +2,9 @@ string meth "rectangle"
 
 float64 time 0.0
 
-float64 aa 0.0
-float64 bb 0.0
+float64 xx 0.0
+float64 yy 0.0
+float64 zz 0.0
 
 ---
 
