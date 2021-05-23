@@ -84,7 +84,7 @@ class Oint(Node):
         x = req.aa/2
         y = req.bb/2
         z = req.zz
-        if req.aa <= 0 or req.bb <= 0 or math.sqrt(z*z+math.sqrt(math.pow(x-(math.sin(math.atan2(x,y))*3),2)) + math.sqrt(z*z+math.pow(y-(math.cos(math.atan2(x,y))*3),2)))>6:
+        if req.aa <= 0 or req.bb <= 0 or !is_in_range(x, y, z-1):
             out.operation = "Nie siegne tam byczq!"
         elif req.zz < 1:
             out.operation = "Tam jest podłoga byczq!"
@@ -228,6 +228,9 @@ def euler_to_quaternion(roll, pitch, yaw):
     qz = math.cos(roll/2) * math.cos(pitch/2) * math.sin(yaw/2) - math.sin(roll/2) * math.sin(pitch/2) * math.cos(yaw/2)
     qw = math.cos(roll/2) * math.cos(pitch/2) * math.cos(yaw/2) + math.sin(roll/2) * math.sin(pitch/2) * math.sin(yaw/2)
     return Quaternion(x=qx, y=qy, z=qz, w=qw)
+
+def is_in_range(x, y, z):
+    return math.sqrt(z*z+math.sqrt(math.pow(x-(math.sin(math.atan2(x,y))*3),2)) + math.sqrt(z*z+math.pow(y-(math.cos(math.atan2(x,y))*3),2)))<=6
 
 def main():
     wenzel = Oint()
