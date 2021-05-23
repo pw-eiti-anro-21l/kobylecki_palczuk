@@ -1,11 +1,10 @@
 string meth "linear"
-string shape "rectangle"
 
-float64 time 20.0
+float64 time 1.0
 
-float64 aa 8.0
-float64 bb 8.0
-float64 zz 4.0
+float64 xx 0.0
+float64 yy 0.0
+float64 zz 0.0
 
 ---
 

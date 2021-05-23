@@ -84,7 +84,7 @@ class Oint(Node):
         x = req.aa/2
         y = req.bb/2
         z = req.zz
-        if req.aa <= 0 or req.bb <= 0 or !is_in_range(x, y, z-1):
+        if req.aa <= 0 or req.bb <= 0 or not is_in_range(x, y, z-1):
             out.operation = "Nie siegne tam byczq!"
         elif req.zz < 1:
             out.operation = "Tam jest podłoga byczq!"

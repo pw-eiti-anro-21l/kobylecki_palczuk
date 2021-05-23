@@ -26,7 +26,8 @@ setup(
     entry_points={
         'console_scripts': [
             'ikin = lab5.ikin:main',
-            'oint = lab5.oint:main'
+            'oint = lab5.oint:main',
+            'ocmd = lab5.ocmd:main'
         ],
     },
 )
