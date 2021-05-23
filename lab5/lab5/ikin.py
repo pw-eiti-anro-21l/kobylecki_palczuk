@@ -83,9 +83,9 @@ class Ikin(Node):
             else:
                 self.joints[1] = -alpha #-math.pi / 2 + alpha
             self.joints[2] = -psi
-            # platynowy debugger
-            self.get_logger().info("alpha = " + str(self.joints[1]))
-            self.get_logger().info("psi = " + str(self.joints[2]))
+            # # platynowy debugger
+            # self.get_logger().info("alpha = " + str(self.joints[1]))
+            # self.get_logger().info("psi = " + str(self.joints[2]))
 
             # publikowanie
             self.joint_state = JointState()

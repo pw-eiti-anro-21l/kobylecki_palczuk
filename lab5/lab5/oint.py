@@ -26,9 +26,9 @@ class Oint(Node):
 
     def declare_params(self):
         # pX_Y - pozycja jointa nr X w "chwili" Y
-        self.p1_1 = 3.
-        self.p2_1 = 3.
-        self.p3_1 = 3.
+        self.p1_1 = 0.
+        self.p2_1 = 0.
+        self.p3_1 = 0.
 
         self.p1_0 = 0.
         self.p2_0 = 0.
@@ -38,23 +38,11 @@ class Oint(Node):
         self.p2_2 = 0.
         self.p3_2 = 0.
 
-        # # X_Y - pozycja X skladowej obrotu w "chwili" Y
-        # self.r_1 = 0.
-        # self.p_1 = 0.
-        # self.y_1 = 0.
-
-        # self.r_0 = 0.
-        # self.p_0 = 0.
-        # self.y_0 = 0.
-
-        # self.r_2 = 0.
-        # self.p_2 = 0.
-        # self.y_2 = 0.
-
         self.meth = ""
         self.time = 0
         self.targ_time = 0
-        self.success = False
+        self.success = True
+        # self.general_success = False
 
         # okres co ile liczona jest nowa pozycja w interpolacji
         self.period = 0.05
@@ -67,45 +55,77 @@ class Oint(Node):
         pub.start()
 
     def interpol_callback(self, req, out):
-        if self.success:
-            # rozne wyjatki
-            if self.p1_2 == req.xx and self.p2_2 == req.yy and self.p3_2 == req.zz:# \
-                # and self.r_2 == req.roll and self.p_2 == req.pitch and self.y_2 == req.yaw:
-                out.operation = "Juz to zrobilem byczq!"
-            elif req.zz < 1:
-                out.operation = "Tam jest podłoga byczq!"
-            elif req.meth != "linear" and req.meth != "spline":
-                out.operation = "Nie znam takiej interpolacji byczq!"
-            elif req.time <= 0:
-                out.operation = "Potrzebuje wiecej czasu byczq!"
-            else:
-                self.time = 0.
-                self.success = False
+        # if self.general_success:
+        # rozne wyjatki
+        # if self.p1_2 == req.xx and self.p2_2 == req.yy and self.p3_2 == req.zz:
+        #     out.operation = "Juz to zrobilem byczq!"
+        prop = req.aa / req.bb
+        angle = math.atan2(req.aa, req.bb)
+        x = math.sin(angle * 3)
+        y = math.cos(angle * 3)
+        if req.aa <= 0 and req.bb <= 0 or req.zz > math.sqrt(36 - 9):
+            out.operation = "Nie siegne tam byczq!"
+        # elif math.sqrt(math.pow((x - req.aa/2), 2) + math.pow((y - req.bb/2), 2) + math.pow((req.zz - 1), 2)) > 6:
+        #     out.operation = "Nie siegne tam byczq!"
+        elif req.zz < 1:
+            out.operation = "Tam jest podłoga byczq!"
+        elif req.meth != "linear" and req.meth != "spline":
+            out.operation = "Nie znam takiej interpolacji byczq!"
+        elif req.shape != "rectangle" and req.shape != "ellipse":
+            out.operation = "Nie znam takiego kształtu byczq!"
+        elif req.time <= 0:
+            out.operation = "Potrzebuje wiecej czasu byczq!"
+        else:
+            # prostokąt
+            a = req.aa
+            b = req.bb
+            if req.shape == "rectangle":
+                # podążanie do pozycji startowej
+                self.draw(a/2, b/2, req.zz, 3, req.meth)
+                # rysowanie prostokąta
+                while self.success == False:
+                    time.sleep(0.1)
+                op_time = a / (2*a + 2*b) * req.time
+                self.draw(-a/2, b/2, req.zz, op_time, req.meth)
 
-                self.p1_0 = self.p1_2
-                self.p2_0 = self.p2_2
-                self.p3_0 = self.p3_2
+                while self.success == False:
+                    time.sleep(0.1)
+                op_time = b / (2*a + 2*b) * req.time
+                self.draw(-a/2, -b/2, req.zz, op_time, req.meth)
 
-                self.p1_2 = req.xx
-                self.p2_2 = req.yy
-                self.p3_2 = req.zz
+                while self.success == False:
+                    time.sleep(0.1)
+                op_time = a / (2*a + 2*b) * req.time
+                self.draw(a/2, -b/2, req.zz, op_time, req.meth)
 
-                # self.r_0 = self.r_2
-                # self.p_0 = self.p_2
-                # self.y_0 = self.y_2
-
-                # self.r_2 = req.roll
-                # self.p_2 = req.pitch
-                # self.y_2 = req.yaw
-
-                self.targ_time = req.time
-
-                self.meth = req.meth
+                while self.success == False:
+                    time.sleep(0.1)
+                op_time = b / (2*a + 2*b) * req.time
+                self.draw(a/2, b/2, req.zz, op_time, req.meth)
 
                 out.operation = "Sukces byczq!"
-        else:
-            out.operation = "Jeszcze sie ruszam, chilluj wora!"
+
+            # out.operation = "Sukces byczq!"
+        # else:
+        #     out.operation = "Jeszcze sie ruszam, chilluj wora!"
         return out
+    
+    def draw(self, x, y, z, op_time, meth):
+        self.time = 0.
+        self.success = False
+
+        self.p1_0 = self.p1_2
+        self.p2_0 = self.p2_2
+        self.p3_0 = self.p3_2
+
+        self.p1_2 = x
+        self.p2_2 = y
+        self.p3_2 = z
+
+        self.targ_time = op_time
+
+        self.meth = meth
+        # time.sleep(op_time)
 
     def update_state(self):
         if self.time < self.targ_time:
@@ -115,10 +135,6 @@ class Oint(Node):
             self.p1_1 = self.interpol(self.p1_0, self.p1_2, 0, self.targ_time, self.time, self.meth)
             self.p2_1 = self.interpol(self.p2_0, self.p2_2, 0, self.targ_time, self.time, self.meth)
             self.p3_1 = self.interpol(self.p3_0, self.p3_2, 0, self.targ_time, self.time, self.meth)
-            # # rpy
-            # self.r_1 = self.interpol(self.r_0, self.r_2, 0, self.targ_time, self.time, self.meth)
-            # self.p_1 = self.interpol(self.p_0, self.p_2, 0, self.targ_time, self.time, self.meth)
-            # self.y_1 = self.interpol(self.y_0, self.y_2, 0, self.targ_time, self.time, self.meth)
         else:
             self.success = True
 
@@ -145,7 +161,6 @@ class Oint(Node):
                 self.pose_stamped.pose.position.x = float(self.p1_1)
                 self.pose_stamped.pose.position.y = float(self.p2_1)
                 self.pose_stamped.pose.position.z = float(self.p3_1)
-                # self.pose_stamped.pose.orientation = euler_to_quaternion(float(self.r_1), float(self.p_1), float(self.y_1))
 
                 self.pose_pub.publish(self.pose_stamped)
 
