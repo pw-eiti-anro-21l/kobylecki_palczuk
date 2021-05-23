@@ -82,26 +82,42 @@ class Oint(Node):
             if req.shape == "rectangle":
                 # podążanie do pozycji startowej
                 self.draw(a/2, b/2, req.zz, 3, req.meth)
+                thread0 = threading.Thread(target=self.update_state)
+                thread0.start()
+                thread0.join()
+                
                 # rysowanie prostokąta
-                while self.success == False:
-                    time.sleep(0.1)
+                # while self.success == False:
+                #     time.sleep(0.1)
                 op_time = a / (2*a + 2*b) * req.time
                 self.draw(-a/2, b/2, req.zz, op_time, req.meth)
+                thread1 = threading.Thread(target=self.update_state)
+                thread1.start()
+                thread1.join()
 
-                while self.success == False:
-                    time.sleep(0.1)
+                # while self.success == False:
+                #     time.sleep(0.1)
                 op_time = b / (2*a + 2*b) * req.time
                 self.draw(-a/2, -b/2, req.zz, op_time, req.meth)
+                thread2 = threading.Thread(target=self.update_state)
+                thread2.start()
+                thread2.join()
 
-                while self.success == False:
-                    time.sleep(0.1)
+                # while self.success == False:
+                #     time.sleep(0.1)
                 op_time = a / (2*a + 2*b) * req.time
                 self.draw(a/2, -b/2, req.zz, op_time, req.meth)
+                thread3 = threading.Thread(target=self.update_state)
+                thread3.start()
+                thread3.join()
 
-                while self.success == False:
-                    time.sleep(0.1)
+                # while self.success == False:
+                #     time.sleep(0.1)
                 op_time = b / (2*a + 2*b) * req.time
                 self.draw(a/2, b/2, req.zz, op_time, req.meth)
+                thread4 = threading.Thread(target=self.update_state)
+                thread4.start()
+                thread4.join()
 
                 out.operation = "Sukces byczq!"
 
