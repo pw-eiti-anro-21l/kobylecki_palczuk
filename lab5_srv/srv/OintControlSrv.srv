@@ -1,4 +1,4 @@
-string meth "rectangle"
+string meth "linear"
 
 float64 time 0.0
 

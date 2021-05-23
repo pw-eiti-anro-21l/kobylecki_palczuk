@@ -11,7 +11,7 @@ from geometry_msgs.msg import Quaternion, PoseStamped
 from sensor_msgs.msg import JointState
 from tf2_ros import TransformBroadcaster, TransformStamped
 from rclpy.clock import ROSClock
-from lab4_srv.srv import JintControlSrv, OintControlSrv
+from lab5_srv.srv import OintControlSrv
 
 class Oint(Node):
     def __init__(self):
@@ -72,6 +72,8 @@ class Oint(Node):
             if self.p1_2 == req.xx and self.p2_2 == req.yy and self.p3_2 == req.zz:# \
                 # and self.r_2 == req.roll and self.p_2 == req.pitch and self.y_2 == req.yaw:
                 out.operation = "Juz to zrobilem byczq!"
+            elif req.zz < 1:
+                out.operation = "Tam jest podłoga byczq!"
             elif req.meth != "linear" and req.meth != "spline":
                 out.operation = "Nie znam takiej interpolacji byczq!"
             elif req.time <= 0:
