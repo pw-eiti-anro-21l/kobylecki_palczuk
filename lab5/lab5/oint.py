@@ -12,6 +12,7 @@ from sensor_msgs.msg import JointState
 from tf2_ros import TransformBroadcaster, TransformStamped
 from rclpy.clock import ROSClock
 from lab5_srv.srv import OintControlSrv
+from visualization_msgs.msg import Marker, MarkerArray
 
 class Oint(Node):
     def __init__(self):
@@ -19,6 +20,30 @@ class Oint(Node):
         super().__init__('oint')
         qos_profile = QoSProfile(depth=10)
         self.pose_pub = self.create_publisher(PoseStamped, 'pose_stamped_Ikin', qos_profile)
+        self.mark_pub = self.create_publisher(MarkerArray, '/oh_hai_mark', qos_profile)
+        self.markerArray = MarkerArray()
+        self.marker = Marker()
+        self.marker.header.frame_id = "base"
+        self.marker.id = 0
+        self.marker.action = Marker.DELETEALL
+        self.count = 0
+        self.MARKERS_MAX = 500
+
+        self.markerArray.markers.append(self.marker)
+        self.mark_pub.publish(self.markerArray)
+        self.marker.type = self.marker.SPHERE
+        self.marker.action = self.marker.ADD
+        self.marker.scale.x = 0.03
+        self.marker.scale.y = 0.03
+        self.marker.scale.z = 0.03
+        self.marker.color.a = 0.5
+        self.marker.color.r = 0.0
+        self.marker.color.g = 1.0
+        self.marker.color.b = 0.0
+        self.marker.pose.orientation.w = 1.0
+        self.marker.pose.orientation.x = 1.0
+        self.marker.pose.orientation.y = 1.0
+        self.marker.pose.orientation.z = 1.0
         self.OintControlSrv = self.create_service(OintControlSrv, "oint_control_srv", self.interpol_callback)
         self.nodeName = self.get_name()
         self.get_logger().info("{0} initiated. Beep boop beep.".format(self.nodeName))
@@ -110,6 +135,20 @@ class Oint(Node):
     def publish_state(self):
         while True:
             try:
+                self.marker.pose.position.x = self.pose_stamped.pose.position.x
+                self.marker.pose.position.y = self.pose_stamped.pose.position.y
+                self.marker.pose.position.z = self.pose_stamped.pose.position.z
+                if(self.count > self.MARKERS_MAX):
+                        self.markerArray.markers.pop(0)
+                self.markerArray.markers.append(self.marker)
+
+                i = 0
+                for mark in self.markerArray.markers:
+                    mark.id = i
+                    i += 1
+
+                self.mark_pub.publish(self.markerArray)
+                self.count += 1
                 # update pose_stamped
                 now = self.get_clock().now()
                 self.pose_stamped.header.stamp = now.to_msg()

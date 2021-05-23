@@ -23,7 +23,7 @@ def generate_launch_description():
             name='bogson_rviz2',
             output='screen',
             parameters=[{'use_sim_time': use_sim_time,}],
-            arguments=['-d', os.path.join(get_package_share_directory('lab4'), rviz2_file_name)])#,
+            arguments=['-d', os.path.join(get_package_share_directory('lab5'), rviz2_file_name)])#,
         # Node(
         #     package='joint_state_publisher_gui',
         #     executable='joint_state_publisher_gui',
