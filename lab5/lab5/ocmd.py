@@ -7,6 +7,11 @@ class Ocmd(Node):
     def __init__(self):
         rclpy.init()
         super().__init__('Ocmd')
+        self.x = 0.0
+        self.y = 0.0
+        self.z = 0.0
+        self.time = 0.0
+        self.meth = ""
         self.cli = self.create_client(OintControlSrv, "oint_control_srv")
         while not self.cli.wait_for_service(timeout_sec=1.0):
             self.get_logger().info('service not available, waiting again...')
@@ -23,17 +28,24 @@ class Ocmd(Node):
 def main():
     ocmd = Ocmd()
     # aa = sys.argv[1]
-    a = float(input("A = "))
-    b = float(input("B = "))
-    z = float(input("Z = "))
-    full_time = float(input("Time = "))
-    method = input("Method = ")
+
+    # a = float(input("A = "))
+    # b = float(input("B = "))
+    # z = float(input("Z = "))
+    # full_time = float(input("Time = "))
+    # method = input("Method = ")
+
+    a = 8.0
+    b = 8.0
+    z = 5.0
+    full_time = 20.0
+    method = "linear"
 
     # jazda do pozycji poczatkowej
     ocmd.x = a/2
     ocmd.y = b/2
     ocmd.z = z
-    ocmd.time = 3
+    ocmd.time = 5
     ocmd.meth = method
 
     ocmd.send_request()
