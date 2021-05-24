@@ -33,17 +33,17 @@ def main():
     ocmd = Ocmd()
     # aa = sys.argv[1]
 
-    # a = float(input("A = "))
-    # b = float(input("B = "))
-    # z = float(input("Z = "))
-    # full_time = float(input("Time = "))
-    # method = input("Method = ")
+    a = float(input("A = "))
+    b = float(input("B = "))
+    z = float(input("Z = "))
+    full_time = float(input("Time = "))
+    method = input("Method = ")
 
-    a = 8.0
-    b = 8.0
-    z = 5.0
-    full_time = 20.0
-    method = "linear"
+    # a = 8.0
+    # b = 8.0
+    # z = 5.0
+    # full_time = 20.0
+    # method = "linear"
 
     # jazda do pozycji poczatkowej
     ocmd.x = a/2
