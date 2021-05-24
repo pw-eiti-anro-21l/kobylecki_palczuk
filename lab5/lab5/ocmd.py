@@ -33,115 +33,137 @@ def main():
     ocmd = Ocmd()
     # aa = sys.argv[1]
 
+    shape = input("Shape = ")
     a = float(input("A = "))
     b = float(input("B = "))
     z = float(input("Z = "))
     full_time = float(input("Time = "))
     method = input("Method = ")
+    status = True
 
     # a = 8.0
     # b = 8.0
     # z = 5.0
     # full_time = 20.0
     # method = "linear"
+    if z < 1:
+        ocmd.get_logger().info("There is a floor!")
+        status = False
+    if a <= 0 or b <= 0:
+        ocmd.get_logger().info("Shape parameters must be positive!")
+        status = False
+    if method != "linear" and method != "spline":
+        ocmd.get_logger().info("Not a known interpolation method!")
+        status = False
+    if shape != "rectangle" and shape != "ellipse":
+        ocmd.get_logger().info("Not a known shape!")
+        status = False
+    if full_time <= 0:
+        ocmd.get_logger().info("I need more time!")
+        status = False
+    if status:
+        # prostokąt
+        if shape == "rectangle":
+            # jazda do pozycji poczatkowej
+            ocmd.x = a/2
+            ocmd.y = b/2
+            ocmd.z = z
+            ocmd.time = 5
+            ocmd.meth = method
 
-    # jazda do pozycji poczatkowej
-    ocmd.x = a/2
-    ocmd.y = b/2
-    ocmd.z = z
-    ocmd.time = 5
-    ocmd.meth = method
+            if is_in_range(ocmd.x, ocmd.y, ocmd.z):
+                ocmd.send_request()
 
-    if is_in_range(ocmd.x, ocmd.y, ocmd.z):
-        ocmd.send_request()
+                while rclpy.ok():
+                    rclpy.spin_once(ocmd)
+                    if ocmd.future.done():
+                        try:
+                            response = ocmd.future.result()
+                        except Exception as e:
+                            ocmd.get_logger().info(
+                                'Service call failed %r' % (e,))
+                        break
 
-        while rclpy.ok():
-            rclpy.spin_once(ocmd)
-            if ocmd.future.done():
-                try:
-                    response = ocmd.future.result()
-                except Exception as e:
-                    ocmd.get_logger().info(
-                        'Service call failed %r' % (e,))
-                break
+                # pierwsze a
+                ocmd.x = -a/2
+                ocmd.y = b/2
+                ocmd.z = z
+                ocmd.time = a / (2*a + 2*b) * full_time
+                ocmd.meth = method
 
-        # pierwsze a
-        ocmd.x = -a/2
-        ocmd.y = b/2
-        ocmd.z = z
-        ocmd.time = a / (2*a + 2*b) * full_time
-        ocmd.meth = method
+                ocmd.send_request()
 
-        ocmd.send_request()
+                while rclpy.ok():
+                    rclpy.spin_once(ocmd)
+                    if ocmd.future.done():
+                        try:
+                            response = ocmd.future.result()
+                        except Exception as e:
+                            ocmd.get_logger().info(
+                                'Service call failed %r' % (e,))
+                        break
 
-        while rclpy.ok():
-            rclpy.spin_once(ocmd)
-            if ocmd.future.done():
-                try:
-                    response = ocmd.future.result()
-                except Exception as e:
-                    ocmd.get_logger().info(
-                        'Service call failed %r' % (e,))
-                break
+                # pierwsze b
+                ocmd.x = -a/2
+                ocmd.y = -b/2
+                ocmd.z = z
+                ocmd.time = b / (2*a + 2*b) * full_time
+                ocmd.meth = method
 
-        # pierwsze b
-        ocmd.x = -a/2
-        ocmd.y = -b/2
-        ocmd.z = z
-        ocmd.time = b / (2*a + 2*b) * full_time
-        ocmd.meth = method
+                ocmd.send_request()
 
-        ocmd.send_request()
+                while rclpy.ok():
+                    rclpy.spin_once(ocmd)
+                    if ocmd.future.done():
+                        try:
+                            response = ocmd.future.result()
+                        except Exception as e:
+                            ocmd.get_logger().info(
+                                'Service call failed %r' % (e,))
+                        break
 
-        while rclpy.ok():
-            rclpy.spin_once(ocmd)
-            if ocmd.future.done():
-                try:
-                    response = ocmd.future.result()
-                except Exception as e:
-                    ocmd.get_logger().info(
-                        'Service call failed %r' % (e,))
-                break
+                # drugie a
+                ocmd.x = a/2
+                ocmd.y = -b/2
+                ocmd.z = z
+                ocmd.time = a / (2*a + 2*b) * full_time
+                ocmd.meth = method
 
-        # drugie a
-        ocmd.x = a/2
-        ocmd.y = -b/2
-        ocmd.z = z
-        ocmd.time = a / (2*a + 2*b) * full_time
-        ocmd.meth = method
+                ocmd.send_request()
 
-        ocmd.send_request()
+                while rclpy.ok():
+                    rclpy.spin_once(ocmd)
+                    if ocmd.future.done():
+                        try:
+                            response = ocmd.future.result()
+                        except Exception as e:
+                            ocmd.get_logger().info(
+                                'Service call failed %r' % (e,))
+                        break
 
-        while rclpy.ok():
-            rclpy.spin_once(ocmd)
-            if ocmd.future.done():
-                try:
-                    response = ocmd.future.result()
-                except Exception as e:
-                    ocmd.get_logger().info(
-                        'Service call failed %r' % (e,))
-                break
+                # drugie b
+                ocmd.x = a/2
+                ocmd.y = b/2
+                ocmd.z = z
+                ocmd.time = b / (2*a + 2*b) * full_time
+                ocmd.meth = method
 
-        # drugie b
-        ocmd.x = a/2
-        ocmd.y = b/2
-        ocmd.z = z
-        ocmd.time = b / (2*a + 2*b) * full_time
-        ocmd.meth = method
+                ocmd.send_request()
 
-        ocmd.send_request()
-
-        while rclpy.ok():
-            rclpy.spin_once(ocmd)
-            if ocmd.future.done():
-                try:
-                    response = ocmd.future.result()
-                except Exception as e:
-                    ocmd.get_logger().info(
-                        'Service call failed %r' % (e,))
-                break
-    else:
-        self.get_logger().info('Point out of range')
+                while rclpy.ok():
+                    rclpy.spin_once(ocmd)
+                    if ocmd.future.done():
+                        try:
+                            response = ocmd.future.result()
+                        except Exception as e:
+                            ocmd.get_logger().info(
+                                'Service call failed %r' % (e,))
+                        break
+            else:
+                ocmd.get_logger().info('Point out of range')
+        # elipsa
+        elif shape == "ellipse":
+            ocmd.get_logger().info("Ellipse not implemented yet")
 
     ocmd.destroy_node()
     rclpy.shutdown()
